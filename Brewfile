@@ -6,6 +6,7 @@ brew "fzf"
 brew "gping"
 brew "htop"
 brew "httpie"
+brew "iputils", link: false  # We don't link iputils because it breaks the system 'ping' in WSL
 brew "jq"
 brew "mise"
 brew "ripgrep"
