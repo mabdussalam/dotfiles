@@ -1,0 +1,155 @@
+{
+    ////////////////////////////////////////////////////////////////////////////
+    // Telemetry
+    "telemetry.telemetryLevel": "off",
+    ////////////////////////////////////////////////////////////////////////////
+    // Window
+    "window.restoreWindows": "none",
+    "window.zoomLevel": 0,
+    ////////////////////////////////////////////////////////////////////////////
+    // Workbench
+    "workbench.editor.alwaysShowEditorActions": true,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.restoreViewState": false,
+    "workbench.editor.useModal": "some",
+    "workbench.editor.wrapTabs": true,
+    "workbench.list.smoothScrolling": true,
+    "workbench.sideBar.location": "right",
+    "workbench.tree.enableStickyScroll": true,
+    // "workbench.iconTheme": "material-icon-theme",
+    ////////////////////////////////////////////////////////////////////////////
+    // Explorer
+    "explorer.compactFolders": false,
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        ".env": "*.env, .env.*",
+        "pyproject.toml": "pyproject.toml, uv.lock, poetry.lock"
+    },
+    ////////////////////////////////////////////////////////////////////////////
+    // Editor
+    "editor.aiStats.enabled": true,
+    "editor.cursorBlinking": "phase",
+    "editor.cursorSmoothCaretAnimation": "explicit",
+    "editor.cursorStyle": "line",
+    "editor.cursorSurroundingLines": 4,
+    "editor.fontFamily": "'Cascadia Code', 'Fira Code', 'Source Code Pro', 'Consolas', 'Courier New', 'monospace'",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "editor.guides.bracketPairs": "active",
+    "editor.inlayHints.enabled": "on",
+    "editor.inlineSuggest.enabled": true,
+    "editor.stickyScroll.enabled": true,
+    "editor.quickSuggestions": {
+        "other": "on",
+        "comments": "on",
+        "strings": "on"
+    },
+    "editor.rulers": [
+        80,
+        100,
+        120
+    ],
+    "editor.semanticHighlighting.enabled": "configuredByTheme",
+    "editor.smoothScrolling": true,
+    ////////////////////////////////////////////////////////////////////////////
+    // Terminal
+    "terminal.integrated.enablePersistentSessions": false,
+    "terminal.integrated.fontFamily": "'Cascadia Code NF', 'Fira Code', 'Source Code Pro', 'Consolas', 'Courier New', 'monospace'",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.persistentSessionReviveProcess": "never",
+    "terminal.integrated.scrollback": 10000,
+    "terminal.integrated.stickyScroll.enabled": true,
+    // "terminal.integrated.suggest.enabled": true,
+    "terminal.integrated.tabs.focusMode": "singleClick",
+    ////////////////////////////////////////////////////////////////////////////
+    // Language
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll.ruff": "explicit"
+        },
+        "editor.defaultFormatter": "charliemarsh.ruff",
+        "editor.formatOnSave": true
+    },
+    "[typescript][typescriptreact][javascript][javascriptreact]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[json][jsonl][jsonc]": {
+        "editor.formatOnSave": true
+    },
+    "[yaml]": {
+        "editor.autoIndent": "full",
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[terraform][terraform-vars]": {
+        "editor.formatOnSave": true
+    },
+    "[markdown]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.wordWrap": "on"
+    },
+    // Files
+    "files.associations": {
+        ".env": "dotenv",
+        ".zimrc": "shellscript"
+    },
+    "files.exclude": {
+        "**/.venv": true
+    },
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    ////////////////////////////////////////////////////////////////////////////
+    // Interactive Window
+    "interactiveWindow.executeWithShiftEnter": true,
+    ////////////////////////////////////////////////////////////////////////////
+    // Search
+    "search.exclude": {
+        "**/.venv": true,
+        "**/*.code-search": true,
+        "**/*.lock": true,
+        "**/bower_components": true,
+        "**/node_modules": true
+    },
+    ////////////////////////////////////////////////////////////////////////////
+    // Git
+    "git.openRepositoryInParentFolders": "always",
+    "git.smartCommitChanges": false,
+    ////////////////////////////////////////////////////////////////////////////
+    // Extensions
+    "extensions.autoUpdate": "onlyEnabledExtensions",
+    "workbench.colorTheme": "Catppuccin Mocha",
+    "workbench.iconTheme": "catppuccin-mocha",
+    //// Python
+    "python.analysis.fixAll": [
+        "source.unusedImports"
+    ],
+    "python.languageServer": "Default",
+    // "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.terminal.shellIntegration.enabled": true,
+    "python.analysis.supportAllPythonDocuments": true,
+    "debugpy.debugJustMyCode": false,
+    //// Catppuccin
+    "catppuccin.accentColor": "sky",
+    //// Red Hat
+    "redhat.telemetry.enabled": false,
+    //// Notebook
+    "notebook.formatOnSave.enabled": true,
+    "notebook.lineNumbers": "on",
+    //// Error Lens
+    "errorLens.messageTemplate": "[$count] $message ($code) | $source",
+    "errorLens.onSave": true,
+    //// remote
+    "remote.autoForwardPortsSource": "process",
+    ////////////////////////////////////////////////////////////////////////////
+    // Other
+    "containers.enableComposeLanguageService": false,
+    "diffEditor.codeLens": true
+}
