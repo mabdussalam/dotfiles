@@ -31,16 +31,13 @@ WORDCHARS=${WORDCHARS//[\/]}
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
-# Key bindings (zsh-history-substring-search)
-bindkey "^[[A" history-substring-search-up
-bindkey "^[[B" history-substring-search-down
-# Only bind terminfo keys if they exist
-[[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up
-[[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" history-substring-search-down
+# Key bindings
+#   Only bind terminfo keys if they exist
+bindkey "^H" backward-kill-word
 
 
 # Tools ========================================================================
-alias ls='eza --color=auto --group-directories-first'
+alias ls='eza --color=auto --group-directories-first --icons'
 alias l='ls -al'
 alias ll='ls -l'
 alias la='ls -a'
