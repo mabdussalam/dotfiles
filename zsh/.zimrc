@@ -1,5 +1,9 @@
 # ~/.zimrc
 
+# Use degit by default for all modules: fetches a tarball of the latest release
+# instead of doing a full `git clone`. Much faster, no .git directory left behind.
+zstyle ':zim:zmodule' use 'degit'
+
 # -- Environment & behaviour ---------------------------------------------------
 zmodule environment
 zmodule input
@@ -8,6 +12,7 @@ zmodule utility
 
 # -- Productivity --------------------------------------------------------------
 zmodule git
+zmodule zimfw/fzf
 
 # -- Prompt --------------------------------------------------------------------
 zmodule romkatv/powerlevel10k --use degit

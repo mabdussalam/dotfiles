@@ -37,10 +37,10 @@ After bootstrapping, follow the setup instructions in each module's README to sy
 
 | Tool | Description |
 |------|-------------|
-| [antidote](https://getantidote.github.io/) | Fast Zsh plugin manager |
 | [bat](https://github.com/sharkdp/bat) | `cat` with syntax highlighting |
 | [dust](https://github.com/bootandy/dust) | Intuitive disk usage viewer |
 | [eza](https://github.com/eza-community/eza) | Modern replacement for `ls` |
+| [fd](https://github.com/sharkdp/fd) | Simple, fast alternative to `find` |
 | [fzf](https://github.com/junegunn/fzf) | Fuzzy finder |
 | [gping](https://github.com/orf/gping) | Graphical ping |
 | [htop](https://htop.dev/) | Interactive process viewer |
@@ -55,7 +55,7 @@ After bootstrapping, follow the setup instructions in each module's README to sy
 
 ### [Zsh](zsh/)
 
-Shell configuration using Antidote for plugin management, Powerlevel10k for the prompt, and Zephyr for sensible defaults. See the [Zsh README](zsh/README.md) for details.
+Shell configuration using Zim for plugin management, Powerlevel10k for the prompt, and Zim's built-in modules (environment, input, termtitle, utility) for sensible defaults. See the [Zsh README](zsh/README.md) for details.
 
 ### [VS Code](vscode/)
 

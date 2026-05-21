@@ -1,6 +1,7 @@
 brew "bat"
 brew "dust"
 brew "eza"
+brew "fd"
 brew "fzf"
 brew "gping"
 brew "htop"

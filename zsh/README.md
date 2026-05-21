@@ -14,9 +14,12 @@ The setup uses [Zim](https://zimfw.sh/) as the plugin manager. Zim is bootstrapp
 
 ## Modules Used
 
+All modules are installed via [degit](https://zimfw.sh/docs/install/#degit) (set globally with `zstyle ':zim:zmodule' use 'degit'` at the top of `.zimrc`), which fetches a tarball of the latest release instead of doing a full `git clone` — faster, and no `.git` directory left behind.
+
 - **`environment`, `input`, `termtitle`, `utility`** — Zim's built-in baseline (history options, keybindings, terminal title, colored `ls`/`grep`/`less`).
 - **`git`** — git aliases and helpers.
-- **`romkatv/powerlevel10k`** — prompt theme (installed with `--use degit` for a fast tarball download).
+- **`zimfw/fzf`** — wires up fzf's shell integration (CTRL-R history search, CTRL-T file finder, ALT-C cd) and completion using the Homebrew-installed `fzf` binary.
+- **`romkatv/powerlevel10k`** — prompt theme. Keeps an explicit `--use degit` flag in `.zimrc` as a belt-and-braces marker, even though degit is the global default.
 - **`zsh-users/zsh-completions`** — extra completion definitions, registered into `fpath` before `compinit`.
 - **`completion`** — Zim's `compinit` runner; must come after any module that adds to `fpath`.
 - **`zdharma-continuum/fast-syntax-highlighting`** — syntax highlighting.
