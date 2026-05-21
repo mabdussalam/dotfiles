@@ -1,0 +1,25 @@
+# ~/.zimrc
+
+# -- Environment & behaviour ---------------------------------------------------
+zmodule environment
+zmodule input
+zmodule termtitle
+zmodule utility
+
+# -- Productivity --------------------------------------------------------------
+zmodule git
+
+# -- Prompt --------------------------------------------------------------------
+zmodule romkatv/powerlevel10k --use degit
+
+# -- Completion ----------------------------------------------------------------
+zmodule zsh-users/zsh-completions --fpath src
+zmodule completion
+
+# -- Must be last, in this exact order -----------------------------------------
+# Syntax highlighter must come before history-substring-search so the keymap
+# widgets it wraps already exist; autosuggestions must be loaded last so it
+# can wrap all preceding widgets.
+zmodule zdharma-continuum/fast-syntax-highlighting
+zmodule zsh-users/zsh-history-substring-search
+zmodule zsh-users/zsh-autosuggestions

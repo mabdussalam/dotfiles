@@ -1,4 +1,3 @@
-brew "antidote"
 brew "bat"
 brew "dust"
 brew "eza"

@@ -4,51 +4,66 @@ This directory contains my Zsh shell configuration, designed to be fast, modular
 
 ## Overview
 
-The setup relies on [Antidote](https://getantidote.github.io/) as the plugin manager and uses [Zephyr](https://github.com/mattmc3/zephyr) for sensible Zsh defaults. The prompt is powered by [Powerlevel10k](https://github.com/romkatv/powerlevel10k).
+The setup uses [Zim](https://zimfw.sh/) as the plugin manager. Zim is bootstrapped inline from `.zshrc` (no Homebrew dependency) and pre-compiles every module into a single `init.zsh` for fast shell startup. The prompt is [Powerlevel10k](https://github.com/romkatv/powerlevel10k) with instant prompt enabled.
 
 ### Files
 
-- **`.zshrc`**: The main configuration file. It loads Antidote, applies custom overrides, defines tools and aliases (like `eza` and `batcat`), and exports necessary environment variables (like `PATH` for Python/Node).
-- **`.zsh_plugins.txt`**: A declarative list of all Zsh plugins managed by Antidote.
-- **`.zshenv`**: Environment configuration loaded for all shell sessions. Currently used to skip global `compinit` on Debian/Ubuntu systems for significantly faster startup times.
+- **`.zshrc`** — main interactive-shell config. Bootstraps Zim, sets shell options, aliases, keybindings, and tool integrations (NVM, uv, Python `PATH`).
+- **`.zimrc`** — declarative list of Zim modules. Editing it and starting a new shell automatically installs/removes modules and rebuilds `init.zsh`.
+- **`.zshenv`** — loaded for every shell. Sets `skip_global_compinit=1` so Debian/Ubuntu's pre-emptive `compinit` doesn't fight Zim's `completion` module.
 
-## Plugins Used
+## Modules Used
 
-- **romkatv/powerlevel10k**: Extremely fast, highly customizable prompt theme.
-- **mattmc3/zephyr**: Modular framework that provides robust defaults for directories, history, the editor, homebrew, and completions without cluttering the `.zshrc`.
-- **zsh-users/zsh-completions**: Additional completion definitions.
-- **zsh-users/zsh-autosuggestions**: Fish-like fast/unobtrusive autosuggestions based on command history.
-- **zdharma-continuum/fast-syntax-highlighting**: Feature-rich, fast syntax highlighting.
-- **zsh-users/zsh-history-substring-search**: Fish-like history search (type part of a command and use the Up/Down arrows to search).
+- **`environment`, `input`, `termtitle`, `utility`** — Zim's built-in baseline (history options, keybindings, terminal title, colored `ls`/`grep`/`less`).
+- **`git`** — git aliases and helpers.
+- **`romkatv/powerlevel10k`** — prompt theme (installed with `--use degit` for a fast tarball download).
+- **`zsh-users/zsh-completions`** — extra completion definitions, registered into `fpath` before `compinit`.
+- **`completion`** — Zim's `compinit` runner; must come after any module that adds to `fpath`.
+- **`zdharma-continuum/fast-syntax-highlighting`** — syntax highlighting.
+- **`zsh-users/zsh-history-substring-search`** — Fish-style history search bound to up/down arrows.
+- **`zsh-users/zsh-autosuggestions`** — Fish-style autosuggestions from history.
+
+The last three must remain in that order (highlighting → substring-search → autosuggestions) — see comments in `.zimrc`.
 
 ## Prerequisites
 
-Before starting, ensure you have the following installed:
 - **Zsh**
-- **Homebrew**
+- **git** and **curl** (for Zim to self-install)
+- **Homebrew** (for the CLI tools in `Brewfile`)
 
-## Setup Instructions
+## Setup
 
 1. **Set Zsh as default shell**:
    ```bash
    chsh -s $(which zsh)
    ```
 
-2. **Install Dependencies**:
-   Antidote and other CLI tools are managed via Homebrew. Install them using the `Brewfile` located in the root of the dotfiles:
+2. **Install CLI tools** via Homebrew:
    ```bash
    brew bundle --file=/path/to/dotfiles/Brewfile
    ```
 
-3. **Symlink the dotfiles** to your home directory:
+3. **Symlink the dotfiles** to `$HOME`:
    ```bash
-   ln -sf /path/to/dotfiles/zsh/.zshrc ~/.zshrc
-   ln -sf /path/to/dotfiles/zsh/.zsh_plugins.txt ~/.zsh_plugins.txt
-   ln -sf /path/to/dotfiles/zsh/.zshenv ~/.zshenv
+   ln -sf /path/to/dotfiles/zsh/.zshrc        ~/.zshrc
+   ln -sf /path/to/dotfiles/zsh/.zimrc        ~/.zimrc
+   ln -sf /path/to/dotfiles/zsh/.zshenv       ~/.zshenv
    ```
 
 4. **Start Zsh**:
    ```bash
    exec zsh
    ```
-   *Antidote will automatically install all missing plugins from `.zsh_plugins.txt` on the first run.*
+   On first run, `.zshrc` downloads `zimfw.zsh` and installs every module declared in `.zimrc`.
+
+## Day-to-day Zim commands
+
+| Command | When to use |
+|---|---|
+| `zimfw update` | Pull latest module versions (run periodically). |
+| `zimfw upgrade` | Upgrade Zim itself. |
+| `zimfw build` | Rebuild `init.zsh` after editing module files directly. |
+| `zimfw compile` | Re-`zcompile` everything for max startup speed. |
+| `zimfw info` | Dump environment info for bug reports. |
+
+After editing `.zimrc`, just open a new shell — Zim detects that `.zimrc` is newer than `init.zsh` and rebuilds automatically. Use `exec zsh` to reload, never `source ~/.zshrc` (that re-runs `compinit` and causes warnings).

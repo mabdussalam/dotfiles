@@ -1,13 +1,22 @@
 # ~/.zshrc
 
 # Homebrew =====================================================================
-# Add Homebrew to PATH
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 
-# Antidote =====================================================================
-source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
-antidote load
+# Zim ==========================================================================
+ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
+
+# Download zimfw plugin manager if missing.
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+  curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh \
+      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+fi
+# Install missing modules and update ${ZIM_HOME}/init.zsh if .zimrc is newer.
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} ]]; then
+  source ${ZIM_HOME}/zimfw.zsh init
+fi
+source ${ZIM_HOME}/init.zsh
 
 
 # ZSH Overrides & Additions ====================================================
