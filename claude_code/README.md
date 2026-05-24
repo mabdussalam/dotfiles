@@ -25,27 +25,26 @@ Invoke with `/skill-name` or describe your intent and Claude will load the relev
 
 ## Hooks
 
-The `post-edit-fmt.sh` hook runs ruff, prettier, or terraform fmt after every `Write`/`Edit`/`MultiEdit`. It is intentionally non-blocking: formatter errors are silently discarded so they never interrupt Claude.
+`post-edit-fmt.sh` runs `ruff format` after every Python file `Write`/`Edit`/`MultiEdit`. The hook is wired in `settings.json`.
 
-**To activate**, add the following to `~/.claude/settings.json` (not managed here — see note below):
+**Failure surfacing**: `ruff format` only fails on real syntax errors, so when it fails the hook emits JSON `{"decision":"block","reason":"..."}` containing the parser error. Per the [official hook contract](https://code.claude.com/docs/en/hooks), this injects the error as a follow-up prompt — Claude sees the syntax issue and inspects the file. Successful runs are silent.
 
-```json
-"hooks": {
-  "PostToolUse": [
-    {
-      "matcher": "Write|Edit|MultiEdit",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "~/.claude/hooks/post-edit-fmt.sh"
-        }
-      ]
-    }
-  ]
-}
-```
+## LSP
 
-> `settings.json` is managed separately and excluded from this README's symlink table to avoid conflicts with other tooling that writes to it.
+Claude Code has native LSP support (v2.1.50+). `pyright-lsp` and `typescript-lsp` from the official Anthropic marketplace are pre-enabled in `settings.json`. The binaries they expect are installed by `install.sh`:
+
+| Plugin | Binary | Installed via |
+|---|---|---|
+| `pyright-lsp` | `pyright-langserver` | `uv tool install pyright` |
+| `typescript-lsp` | `typescript-language-server` | `npm -g typescript-language-server` |
+
+For other languages, install from inside `claude`: `/plugin install <name>@claude-plugins-official`. Required binaries (also on PATH via `install.sh`): `bash-language-server`, `terraform-ls`, `marksman`.
+
+## Tooling — AI dev workflow
+
+| Tool | Purpose | Invocation |
+|------|---------|------------|
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | spec-driven dev (proposal → apply → archive) | per-project: `openspec init --tools claude`, then `/opsx:propose <idea>` |
 
 ## Adding new skills
 

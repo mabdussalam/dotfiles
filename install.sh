@@ -18,42 +18,85 @@ echo ""
 # 1. APT prerequisites (Debian/Ubuntu only)
 # ---------------------------------------------------------------------------
 if command -v apt-get &>/dev/null; then
-    echo "=> [1/8] Installing APT prerequisites (build-essential, curl, git, zsh …)"
+    echo "=> [1/9] Installing APT prerequisites (build-essential, curl, git, zsh …)"
     sudo apt-get update -qq
-    sudo apt-get install -y build-essential procps curl file git zsh
+    sudo apt-get install -y \
+        build-essential procps curl wget file git zsh \
+        ca-certificates gnupg lsb-release software-properties-common
     echo "   APT prerequisites installed."
 
-    # --- Docker (official apt repo — https://docs.docker.com/engine/install/ubuntu/) ---
+    sudo install -m 0755 -d /etc/apt/keyrings
+    UBUNTU_CODENAME="$(. /etc/os-release && echo "$VERSION_CODENAME")"
+    DEB_ARCH="$(dpkg --print-architecture)"
+
+    # --- Docker (https://docs.docker.com/engine/install/ubuntu/) ---
     if ! command -v docker &>/dev/null; then
         echo "   Installing Docker from official apt repo…"
-        sudo apt-get install -y ca-certificates gnupg
-        sudo install -m 0755 -d /etc/apt/keyrings
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
             | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         sudo chmod a+r /etc/apt/keyrings/docker.gpg
-        echo \
-            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-             https://download.docker.com/linux/ubuntu \
-             $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+        echo "deb [arch=$DEB_ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $UBUNTU_CODENAME stable" \
             | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt-get update -qq
-        sudo apt-get install -y \
-            docker-ce docker-ce-cli containerd.io \
-            docker-buildx-plugin docker-compose-plugin
-        sudo usermod -aG docker "$USER"
-        echo "   Docker installed. Re-login or run 'newgrp docker' for group membership."
-    else
-        echo "   Docker already installed: $(docker --version)"
     fi
+
+    # --- HashiCorp (terraform, terraform-ls — https://developer.hashicorp.com/terraform/install) ---
+    if [[ ! -f /etc/apt/keyrings/hashicorp.gpg ]]; then
+        echo "   Adding HashiCorp apt repo (terraform-ls)…"
+        curl -fsSL https://apt.releases.hashicorp.com/gpg \
+            | sudo gpg --dearmor -o /etc/apt/keyrings/hashicorp.gpg
+        sudo chmod a+r /etc/apt/keyrings/hashicorp.gpg
+        echo "deb [arch=$DEB_ARCH signed-by=/etc/apt/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com $UBUNTU_CODENAME main" \
+            | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
+    fi
+
+    # --- eza (https://github.com/eza-community/eza/blob/main/INSTALL.md) ---
+    if [[ ! -f /etc/apt/keyrings/gierens.gpg ]]; then
+        echo "   Adding eza apt repo…"
+        curl -fsSL https://raw.githubusercontent.com/eza-community/eza/main/deb.asc \
+            | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+        sudo chmod a+r /etc/apt/keyrings/gierens.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" \
+            | sudo tee /etc/apt/sources.list.d/gierens.list > /dev/null
+    fi
+
+    # --- HTTPie (https://httpie.io/docs/cli/debian-and-ubuntu) ---
+    if [[ ! -f /etc/apt/keyrings/httpie.gpg ]]; then
+        echo "   Adding HTTPie apt repo…"
+        curl -fsSL https://packages.httpie.io/deb/KEY.gpg \
+            | sudo gpg --dearmor -o /etc/apt/keyrings/httpie.gpg
+        sudo chmod a+r /etc/apt/keyrings/httpie.gpg
+        echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/httpie.gpg] https://packages.httpie.io/deb ./" \
+            | sudo tee /etc/apt/sources.list.d/httpie.list > /dev/null
+    fi
+
+    # --- Trippy (https://github.com/fujiapple852/trippy — official PPA) ---
+    if [[ ! -f /etc/apt/sources.list.d/fujiapple-ubuntu-trippy-${UBUNTU_CODENAME}.list \
+       && ! -f /etc/apt/sources.list.d/fujiapple-ubuntu-trippy.list ]]; then
+        echo "   Adding Trippy PPA (fujiapple/trippy)…"
+        sudo add-apt-repository -y ppa:fujiapple/trippy
+    fi
+
+    # Single update + install everything we just added a repo for
+    sudo apt-get update -qq
+    sudo apt-get install -y \
+        docker-ce docker-ce-cli containerd.io \
+        docker-buildx-plugin docker-compose-plugin \
+        terraform-ls eza httpie trippy
+
+    if ! getent group docker | grep -q "\b$USER\b"; then
+        sudo usermod -aG docker "$USER"
+        echo "   Added $USER to docker group. Re-login or run 'newgrp docker'."
+    fi
+    echo "   APT repo packages installed (docker, terraform-ls, eza, httpie, trippy)."
 else
-    echo "=> [1/8] apt-get not found — skipping APT prerequisites (non-Debian system)."
+    echo "=> [1/9] apt-get not found — skipping APT prerequisites (non-Debian system)."
 fi
 
 # ---------------------------------------------------------------------------
 # 2. Homebrew
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [2/8] Setting up Homebrew…"
+echo "=> [2/9] Setting up Homebrew…"
 
 if ! command -v brew &>/dev/null; then
     echo "   Homebrew not found. Installing non-interactively…"
@@ -80,7 +123,7 @@ echo "   Homebrew ready: $(brew --version | head -1)"
 # 3. brew bundle
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [3/8] Running brew bundle…"
+echo "=> [3/9] Running brew bundle…"
 brew bundle --file="$REPO/Brewfile"
 echo "   brew bundle complete."
 
@@ -91,7 +134,7 @@ echo "   brew bundle complete."
 #    Both install to ~/.local/bin, which .zshrc already adds to PATH.
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [4/8] Installing standalone tools (mise, uv)…"
+echo "=> [4/9] Installing standalone tools (mise, uv, marksman)…"
 
 # Ensure ~/.local/bin is on PATH for the current session (it's in .zshrc for
 # interactive shells, but we need it now while running this script)
@@ -117,11 +160,35 @@ fi
 
 echo "   Run 'mise self-update' / 'uv self update' to update these tools later."
 
+# marksman (Markdown language server — github.com/artempyanykh/marksman)
+mkdir -p "$HOME/.local/bin"
+if [[ -x "$HOME/.local/bin/marksman" ]]; then
+    echo "   marksman already installed."
+else
+    echo "   Installing marksman (Markdown LSP)…"
+    curl -fsSL -o "$HOME/.local/bin/marksman" \
+        https://github.com/artempyanykh/marksman/releases/latest/download/marksman-linux-x64
+    chmod +x "$HOME/.local/bin/marksman"
+    echo "   marksman installed."
+fi
+
+# Python tools via 'uv tool install' (each gets its own isolated venv, on PATH).
+#   - pyright: language server (used by the pyright-lsp Claude Code plugin)
+UV_TOOLS=(pyright)
+for tool in "${UV_TOOLS[@]}"; do
+    if uv tool list 2>/dev/null | grep -q "^$tool "; then
+        echo "   $tool already installed via uv."
+    else
+        echo "   Installing $tool via 'uv tool install'…"
+        uv tool install "$tool" || echo "   WARN: uv tool install $tool failed (continuing)."
+    fi
+done
+
 # ---------------------------------------------------------------------------
 # 5. Symlink configs
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [5/8] Symlinking configs…"
+echo "=> [5/9] Symlinking configs…"
 
 # Helper: symlink $1 → $2, backing up an existing real file
 _link() {
@@ -182,7 +249,7 @@ echo "   Config symlinking complete."
 # 6. nvm + Node
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [6/8] Setting up nvm and Node…"
+echo "=> [6/9] Setting up nvm and Node…"
 
 NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 
@@ -214,10 +281,35 @@ set -euo pipefail
 echo "   Node ready: $(node --version), npm: $(npm --version)"
 
 # ---------------------------------------------------------------------------
-# 7. VS Code extensions
+# 7. npm global tools (LSP servers + OpenSpec)
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [7/8] VS Code extensions…"
+echo "=> [7/9] Installing npm global tools (LSP servers, OpenSpec)…"
+
+# Language-server binaries — Claude Code's official LSP plugins
+# (pyright-lsp, typescript-lsp, etc.) expect these on PATH. pyright is
+# installed via uv (above). vtsls would require a custom local plugin; the
+# official typescript-lsp plugin uses typescript-language-server.
+NPM_GLOBALS=(
+    typescript                    # tsc/tsserver (required by typescript-language-server)
+    typescript-language-server    # TypeScript/JS LSP (typescript-lsp plugin)
+    bash-language-server          # Bash LSP
+    "@fission-ai/openspec"        # spec-driven dev workflow
+)
+for pkg in "${NPM_GLOBALS[@]}"; do
+    if npm ls -g --depth=0 "$pkg" &>/dev/null; then
+        echo "   $pkg already installed."
+    else
+        echo "   Installing $pkg…"
+        npm install -g "$pkg"
+    fi
+done
+
+# ---------------------------------------------------------------------------
+# 8. VS Code extensions
+# ---------------------------------------------------------------------------
+echo ""
+echo "=> [8/9] VS Code extensions…"
 
 if command -v code &>/dev/null; then
     bash "$REPO/vscode/scripts/install-extensions.sh"
@@ -227,10 +319,10 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 8. Default shell → zsh
+# 9. Default shell → zsh
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [8/8] Setting default shell to zsh…"
+echo "=> [9/9] Setting default shell to zsh…"
 
 ZSH_PATH="$(command -v zsh)"
 
@@ -272,4 +364,10 @@ echo "   2. If you use Powerlevel10k, run 'p10k configure' to set up the"
 echo "      prompt, or copy your existing ~/.p10k.zsh into place."
 echo "   3. If VS Code extensions were skipped, run:"
 echo "      $REPO/vscode/scripts/install-extensions.sh"
+echo "   4. Claude Code LSP plugins (pyright-lsp, typescript-lsp) are pre-enabled"
+echo "      in claude_code/settings.json — they activate on next 'claude' launch."
+echo "      For other languages, install plugins from the official marketplace:"
+echo "        /plugin install <name>@claude-plugins-official"
+echo "   5. Per-project bootstrap of OpenSpec (spec-driven workflow):"
+echo "        cd your-project && openspec init --tools claude"
 echo ""

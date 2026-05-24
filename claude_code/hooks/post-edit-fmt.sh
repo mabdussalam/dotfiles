@@ -1,48 +1,30 @@
 #!/usr/bin/env bash
-# Post-edit auto-formatter hook for Claude Code.
-# Triggered after Write/Edit/MultiEdit tool use.
+# Post-edit Python auto-formatter for Claude Code.
+# Triggered after Write/Edit/MultiEdit on .py files.
 #
-# Receives JSON on stdin; exits 0 (success) or 1 (non-blocking warn).
-# Does NOT block the edit — formatting errors are informational only.
+# Contract (https://code.claude.com/docs/en/hooks):
+#   - Exit 0 with no stdout: silent success.
+#   - Exit 0 with JSON `{"decision":"block","reason":"..."}` on stdout:
+#     `reason` is injected into Claude's context as a follow-up prompt.
 #
-# Wire up in ~/.claude/settings.json under hooks.PostToolUse:
-#   {
-#     "matcher": "Write|Edit|MultiEdit",
-#     "hooks": [{ "type": "command", "command": "~/.claude/hooks/post-edit-fmt.sh" }]
-#   }
+# `ruff format` only fails on real syntax errors, so surfacing its stderr
+# tells Claude there's something to inspect and fix.
 
-set -euo pipefail
+set -uo pipefail
 
-# Parse the edited file path from stdin JSON
 FILE_PATH=$(jq -r '.tool_input.file_path // .tool_input.path // empty' 2>/dev/null)
 
-if [[ -z "$FILE_PATH" || ! -f "$FILE_PATH" ]]; then
+if [[ -z "$FILE_PATH" || ! -f "$FILE_PATH" || "${FILE_PATH##*.}" != "py" ]]; then
     exit 0
 fi
 
-EXT="${FILE_PATH##*.}"
+if ! command -v ruff &>/dev/null; then
+    exit 0
+fi
 
-case "$EXT" in
-    py)
-        if command -v ruff &>/dev/null; then
-            ruff format --quiet "$FILE_PATH" 2>/dev/null || true
-            ruff check --fix --quiet "$FILE_PATH" 2>/dev/null || true
-        fi
-        ;;
-    js|jsx|ts|tsx|json|css|md|yaml|yml)
-        # Only run prettier if a config exists nearby (respects project opt-in)
-        if command -v prettier &>/dev/null && \
-           { [[ -f ".prettierrc" ]] || [[ -f ".prettierrc.json" ]] || \
-             [[ -f ".prettierrc.js" ]] || [[ -f "prettier.config.js" ]] || \
-             grep -q '"prettier"' package.json 2>/dev/null; }; then
-            prettier --write --log-level silent "$FILE_PATH" 2>/dev/null || true
-        fi
-        ;;
-    tf|tfvars)
-        if command -v terraform &>/dev/null; then
-            terraform fmt -write=true "$FILE_PATH" 2>/dev/null || true
-        fi
-        ;;
-esac
+if ! output=$(ruff format "$FILE_PATH" 2>&1); then
+    jq -nc --arg reason "ruff format failed on $FILE_PATH — likely a syntax error introduced by the edit. Inspect and fix:"$'\n\n'"$output" \
+        '{decision:"block", reason:$reason, suppressOutput:true}'
+fi
 
 exit 0
