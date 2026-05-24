@@ -6,11 +6,9 @@ brew "fzf"
 brew "gping"
 brew "htop"
 brew "httpie"
-brew "iputils", link: false  # We don't link iputils because it breaks the system 'ping' in WSL
+brew "iputils", link: false  # Kept keg-only (link: false) — gping pulls this as a dep on Linux. Not linking prevents brew's iputils from shadowing the system ping in WSL.
 brew "jq"
-brew "mise"
 brew "ripgrep"
 brew "tldr"
 brew "trippy"
-brew "uv"
 brew "yq"

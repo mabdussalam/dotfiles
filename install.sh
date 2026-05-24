@@ -18,19 +18,19 @@ echo ""
 # 1. APT prerequisites (Debian/Ubuntu only)
 # ---------------------------------------------------------------------------
 if command -v apt-get &>/dev/null; then
-    echo "=> [1/7] Installing APT prerequisites (build-essential, curl, git, zsh …)"
+    echo "=> [1/8] Installing APT prerequisites (build-essential, curl, git, zsh …)"
     sudo apt-get update -qq
     sudo apt-get install -y build-essential procps curl file git zsh
     echo "   APT prerequisites installed."
 else
-    echo "=> [1/7] apt-get not found — skipping APT prerequisites (non-Debian system)."
+    echo "=> [1/8] apt-get not found — skipping APT prerequisites (non-Debian system)."
 fi
 
 # ---------------------------------------------------------------------------
 # 2. Homebrew
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [2/7] Setting up Homebrew…"
+echo "=> [2/8] Setting up Homebrew…"
 
 if ! command -v brew &>/dev/null; then
     echo "   Homebrew not found. Installing non-interactively…"
@@ -57,15 +57,48 @@ echo "   Homebrew ready: $(brew --version | head -1)"
 # 3. brew bundle
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [3/7] Running brew bundle…"
+echo "=> [3/8] Running brew bundle…"
 brew bundle --file="$REPO/Brewfile"
 echo "   brew bundle complete."
 
 # ---------------------------------------------------------------------------
-# 4. Symlink configs
+# 4. Standalone tool installers (mise, uv)
+#    These tools ship self-update mechanisms that the Homebrew bottles bypass.
+#    Official installers are the upstream-preferred path on Linux.
+#    Both install to ~/.local/bin, which .zshrc already adds to PATH.
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [4/7] Symlinking configs…"
+echo "=> [4/8] Installing standalone tools (mise, uv)…"
+
+# Ensure ~/.local/bin is on PATH for the current session (it's in .zshrc for
+# interactive shells, but we need it now while running this script)
+export PATH="$HOME/.local/bin:$PATH"
+
+# mise (runtime version manager — https://mise.jdx.dev)
+if command -v mise &>/dev/null; then
+    echo "   mise already installed: $(mise --version)"
+else
+    echo "   Installing mise via official installer…"
+    curl -fsSL https://mise.run | sh
+    echo "   mise installed."
+fi
+
+# uv (Python package/project manager — https://astral.sh/uv)
+if command -v uv &>/dev/null; then
+    echo "   uv already installed: $(uv --version)"
+else
+    echo "   Installing uv via official installer…"
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    echo "   uv installed."
+fi
+
+echo "   Run 'mise self-update' / 'uv self update' to update these tools later."
+
+# ---------------------------------------------------------------------------
+# 5. Symlink configs
+# ---------------------------------------------------------------------------
+echo ""
+echo "=> [5/8] Symlinking configs…"
 
 # Helper: symlink $1 → $2, backing up an existing real file
 _link() {
@@ -123,10 +156,10 @@ done
 echo "   Config symlinking complete."
 
 # ---------------------------------------------------------------------------
-# 5. nvm + Node
+# 6. nvm + Node
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [5/7] Setting up nvm and Node…"
+echo "=> [6/8] Setting up nvm and Node…"
 
 NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 
@@ -158,10 +191,10 @@ set -euo pipefail
 echo "   Node ready: $(node --version), npm: $(npm --version)"
 
 # ---------------------------------------------------------------------------
-# 6. VS Code extensions
+# 7. VS Code extensions
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [6/7] VS Code extensions…"
+echo "=> [7/8] VS Code extensions…"
 
 if command -v code &>/dev/null; then
     bash "$REPO/vscode/scripts/install-extensions.sh"
@@ -171,10 +204,10 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 7. Default shell → zsh
+# 8. Default shell → zsh
 # ---------------------------------------------------------------------------
 echo ""
-echo "=> [7/7] Setting default shell to zsh…"
+echo "=> [8/8] Setting default shell to zsh…"
 
 ZSH_PATH="$(command -v zsh)"
 
