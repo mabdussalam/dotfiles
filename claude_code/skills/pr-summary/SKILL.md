@@ -1,7 +1,7 @@
 ---
 name: pr-summary
 description: Summarize the current PR's diff and flag risks. Use when asked to review changes, summarize a PR, write a PR description, or check what changed.
-disable-model-invocation: false
+disable-model-invocation: true
 allowed-tools: Bash(git *)
 ---
 

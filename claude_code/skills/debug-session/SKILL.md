@@ -2,6 +2,7 @@
 name: debug-session
 description: Structured debugging session for a reported error or unexpected behavior. Use when given a traceback, error message, or symptom to investigate. Gathers context, forms hypotheses, and proposes a fix without making changes until confirmed.
 allowed-tools: Read Bash(git *) Bash(rg *) Bash(fd *) Bash(uv run *) Bash(node *) Bash(npx *)
+disable-model-invocation: true
 ---
 
 ## Debug brief

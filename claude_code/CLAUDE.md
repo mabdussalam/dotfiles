@@ -8,12 +8,11 @@
 
 ## Code style
 
-**Python**: formatted and linted with `ruff` (format + check). No `black`, no `flake8`.
-Type-annotate function signatures. Prefer `pathlib.Path` over `os.path`. Omit docstrings for obvious helpers; add them where intent isn't clear from the signature alone.
+**Python**: Type-annotate function signatures. Prefer `pathlib.Path` over `os.path`. Omit docstrings for obvious helpers; add them where intent isn't clear from the signature alone.
 
-**TypeScript / JavaScript**: formatted with Prettier (project config governs). Prefer `const` and arrow functions. No semicolons unless the project already uses them.
+**TypeScript / JavaScript**: Prefer `const` and arrow functions. No semicolons unless the project already uses them.
 
-**Terraform**: `terraform fmt` style. One resource per file when reasonable.
+**Terraform**: One resource per file when reasonable.
 
 **SQL**: uppercase keywords, lowercase identifiers.
 
@@ -49,3 +48,21 @@ Don't add tests for trivial getters/setters; do add them for business logic and 
 
 Commit messages: imperative mood, ≤72 chars subject, blank line before body if needed.
 Don't commit generated files, lock files, or `.env` variants unless they're already tracked.
+
+## Working style — subagents
+
+Prefer spawning subagents (via the Agent tool) over running tasks inline. Root context is expensive — spend it on requirements, design decisions, and integration. Delegate execution.
+
+**Delegate to a subagent when:**
+- A task requires reading ≥ 3 files or running ≥ 3 commands
+- Work can be spec'd and reviewed as output (a search, a refactor, an analysis)
+- Tasks are parallelisable — send multiple agents in one message for concurrent work
+- The work is self-contained and doesn't need interactive back-and-forth
+
+**Root Claude owns:**
+- Understanding requirements and surfacing ambiguities early
+- Breaking work into independently-delegatable pieces
+- Reviewing subagent output and integrating findings
+- Keeping the overall plan coherent
+
+When in doubt, delegate. A sharp root context makes better decisions.
