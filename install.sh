@@ -22,6 +22,29 @@ if command -v apt-get &>/dev/null; then
     sudo apt-get update -qq
     sudo apt-get install -y build-essential procps curl file git zsh
     echo "   APT prerequisites installed."
+
+    # --- Docker (official apt repo — https://docs.docker.com/engine/install/ubuntu/) ---
+    if ! command -v docker &>/dev/null; then
+        echo "   Installing Docker from official apt repo…"
+        sudo apt-get install -y ca-certificates gnupg
+        sudo install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+            | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        sudo chmod a+r /etc/apt/keyrings/docker.gpg
+        echo \
+            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+             https://download.docker.com/linux/ubuntu \
+             $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+            | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update -qq
+        sudo apt-get install -y \
+            docker-ce docker-ce-cli containerd.io \
+            docker-buildx-plugin docker-compose-plugin
+        sudo usermod -aG docker "$USER"
+        echo "   Docker installed. Re-login or run 'newgrp docker' for group membership."
+    else
+        echo "   Docker already installed: $(docker --version)"
+    fi
 else
     echo "=> [1/8] apt-get not found — skipping APT prerequisites (non-Debian system)."
 fi
