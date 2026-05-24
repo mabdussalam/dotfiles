@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+# Brew-only convenience re-run. For full setup on a fresh machine, use install.sh instead.
 
 echo "=> Starting bootstrap process..."
 
