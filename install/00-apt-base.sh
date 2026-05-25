@@ -9,6 +9,7 @@ is_debian || { log "apt-get not found — skipping APT base (non-Debian system).
 
 log "Installing APT prerequisites (build-essential, curl, git, zsh …)"
 sudo apt-get update -qq
-# shellcheck disable=SC2046
-sudo apt-get install -y $(read_list apt-base)
+# Read list into an array so each package is a properly-quoted arg.
+mapfile -t pkgs < <(read_list apt-base)
+sudo apt-get install -y "${pkgs[@]}"
 log "APT prerequisites installed."

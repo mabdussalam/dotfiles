@@ -23,7 +23,9 @@ else
 fi
 
 # Group membership: idempotent — only usermod if user not yet in docker group.
-if ! getent group docker | grep -q "\b$USER\b"; then
+# `id -nG` lists groups by name; grep -qx matches a whole group name (so a
+# hypothetical user "docker" doesn't false-positive against the group name).
+if ! id -nG "$USER" | tr ' ' '\n' | grep -qx docker; then
     sudo usermod -aG docker "$USER"
     log "Added $USER to docker group. Re-login or run 'newgrp docker'."
 fi

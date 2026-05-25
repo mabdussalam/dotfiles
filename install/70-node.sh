@@ -20,12 +20,14 @@ else
 fi
 
 # Load nvm into this session (without modifying shell profile again).
-# nvm.sh references unset vars and returns non-zero internally, so relax
-# errexit/nounset/pipefail while sourcing and running it, then restore.
+# nvm.sh references unset vars internally, so relax errexit/nounset/pipefail
+# JUST for the source line, then restore — we still want errexit to catch
+# failures from `nvm install` / `nvm alias` below.
 export NVM_DIR="$HOME/.nvm"
 set +euo pipefail
 # shellcheck source=/dev/null
 \. "$NVM_DIR/nvm.sh"
+set -euo pipefail
 
 log "nvm version: $(nvm --version)"
 
@@ -34,5 +36,4 @@ log "nvm version: $(nvm --version)"
 log "Installing Node from .nvmrc…"
 (cd "$REPO" && nvm install)
 nvm alias default 'lts/*'
-set -euo pipefail
 log "Node ready: $(node --version), npm: $(npm --version)"

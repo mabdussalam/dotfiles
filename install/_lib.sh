@@ -11,21 +11,25 @@ die()  { printf '   ERROR: %s\n' "$*" >&2; exit 1; }
 
 # --- platform probes -------------------------------------------------------
 is_debian()       { command -v apt-get &>/dev/null; }
-ubuntu_codename() { . /etc/os-release && printf '%s' "$VERSION_CODENAME"; }
+ubuntu_codename() { ( . /etc/os-release && printf '%s' "${VERSION_CODENAME:-}" ); }
 deb_arch()        { dpkg --print-architecture; }
 
 # --- apt repo helpers ------------------------------------------------------
 ensure_keyring_dir() { sudo install -m 0755 -d /etc/apt/keyrings; }
 
-# add_apt_repo NAME KEY_URL LIST_LINE — idempotent (skip if keyring already exists)
+# add_apt_repo NAME KEY_URL LIST_LINE — idempotent (skip if keyring already
+# exists AND is non-empty; a zero-byte file from a previously aborted run is
+# rewritten). Writes the keyring atomically via a .tmp file + mv.
 add_apt_repo() {
     local name="$1" key_url="$2" list_line="$3"
-    if [[ -f "/etc/apt/keyrings/$name.gpg" ]]; then
+    local key="/etc/apt/keyrings/$name.gpg"
+    if [[ -s "$key" ]]; then
         return 0
     fi
     ensure_keyring_dir
-    curl -fsSL "$key_url" | sudo gpg --dearmor -o "/etc/apt/keyrings/$name.gpg"
-    sudo chmod a+r "/etc/apt/keyrings/$name.gpg"
+    curl -fsSL "$key_url" | sudo gpg --dearmor -o "$key.tmp"
+    sudo chmod a+r "$key.tmp"
+    sudo mv "$key.tmp" "$key"
     printf '%s\n' "$list_line" | sudo tee "/etc/apt/sources.list.d/$name.list" > /dev/null
 }
 

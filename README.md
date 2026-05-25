@@ -32,10 +32,10 @@ Then open a new terminal — Zim will bootstrap itself and install plugins on fi
 | 40 | `40-mise.sh` | Installs `mise` (runtime version manager) via the upstream installer. |
 | 41 | `41-uv.sh` | Installs `uv` (Python package manager) via the upstream installer. |
 | 42 | `42-marksman.sh` | Drops the `marksman` Markdown LSP binary into `~/.local/bin`. |
-| 50 | `50-uv-tools.sh` | `uv tool install` for everything in `install/lists/uv-tools.txt` (`pyright`). |
+| 50 | `50-uv-tools.sh` | `uv tool install` for everything in `install/lists/uv-tools.txt` (`pyright`, `ruff`). |
 | 60 | `60-symlinks.sh` | Symlinks `zsh/*`, `vscode/{settings,keybindings}.json`, and everything under `claude_code/` (except READMEs) into `~/`. Backs up existing real files to `<file>.bak`. |
 | 70 | `70-node.sh` | Installs `nvm` if missing, then installs the Node version from `.nvmrc` (`lts/*`) and aliases it as default. |
-| 80 | `80-npm-globals.sh` | `npm install -g` for everything in `install/lists/npm-globals.txt` (TypeScript + LSPs, OpenSpec). |
+| 80 | `80-npm-globals.sh` | `npm install -g` for everything in `install/lists/npm-globals.txt` (TypeScript, `typescript-language-server`, OpenSpec). |
 | 90 | `90-vscode.sh` | Delegates to `vscode/scripts/install-extensions.sh` if `code` is on PATH; otherwise prints a skip note. |
 | 99 | `99-shell.sh` | Sets zsh as the default shell via `chsh`. If `chsh` fails (common in some WSL setups), prints clear manual fallback instructions instead of aborting. |
 
@@ -80,7 +80,7 @@ Tools split between Homebrew (no vendor apt repo) and vendor apt repos (fresh up
 | [Docker](https://docs.docker.com/) | apt (download.docker.com) | Container runtime |
 | [terraform-ls](https://github.com/hashicorp/terraform-ls) | apt (HashiCorp) | Terraform language server (LSP) |
 
-**Language servers** (for Claude Code's native LSP — `pyright-lsp` and `typescript-lsp` plugins are pre-enabled in `claude_code/settings.json`): `pyright` via `uv tool`; `typescript-language-server`, `bash-language-server` via `npm -g`; `marksman` from GitHub releases; `terraform-ls` from the HashiCorp apt repo.
+**Language servers** (for Claude Code's native LSP — `pyright-lsp` and `typescript-lsp` plugins are pre-enabled in `claude_code/settings.json`): `pyright` via `uv tool`; `typescript-language-server` via `npm -g`. `marksman` (Markdown) and `terraform-ls` are also on PATH for future plugin pairings.
 
 **AI dev tools**: `@fission-ai/openspec` (npm) for spec-driven workflows.
 
