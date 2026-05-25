@@ -1,0 +1,3 @@
+# Python tools installed via `uv tool install` (each in its own isolated venv).
+pyright       # language server for the pyright-lsp Claude Code plugin
+ruff

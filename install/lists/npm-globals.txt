@@ -1,0 +1,4 @@
+# npm global packages
+typescript                    # required by typescript-language-server
+typescript-language-server    # TypeScript/JS LSP (typescript-lsp plugin)
+@fission-ai/openspec          # spec-driven dev workflow

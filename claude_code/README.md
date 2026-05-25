@@ -53,7 +53,7 @@ mkdir -p claude_code/skills/my-skill
 # Write claude_code/skills/my-skill/SKILL.md with frontmatter + instructions
 ```
 
-The symlink loop in `install.sh` picks up the whole `skills/` directory tree automatically — no changes to `install.sh` needed.
+The symlink loop in `install/60-symlinks.sh` picks up the whole `skills/` directory tree automatically — no changes to the installer needed.
 
 ## References
 

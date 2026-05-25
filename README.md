@@ -18,18 +18,28 @@ Then open a new terminal — Zim will bootstrap itself and install plugins on fi
 
 ## What `install.sh` Does
 
-1. **APT prerequisites + vendor apt repos** (Ubuntu/Debian only): installs build tools and zsh, then adds vendor apt repos for **Docker**, **HashiCorp** (`terraform-ls`), **eza**, **HTTPie**, and **Trippy** so those tools track upstream releases instead of stale Ubuntu defaults.
-2. **Homebrew**: installs non-interactively if missing; otherwise updates.
-3. **brew bundle**: installs everything listed in `Brewfile` (the CLI tools that don't have vendor apt repos).
-4. **Standalone tools**: installs `mise` and `uv` via official installers, `marksman` (Markdown LSP) from GitHub releases, and `pyright` via `uv tool install`.
-5. **Symlinks** all configs into place (backing up existing real files to `<file>.bak`):
-   - `zsh/.zshrc`, `zsh/.zimrc`, `zsh/.zshenv` → `~/.zshrc` etc.
-   - `vscode/settings.json`, `vscode/keybindings.json` → `~/.config/Code/User/`
-   - Everything under `claude_code/` (except READMEs) → `~/.claude/`
-6. **nvm + Node**: installs nvm if missing, then installs the Node version from `.nvmrc` (`lts/*`).
-7. **npm global tools**: `typescript-language-server`, `bash-language-server` (Claude Code LSP plugins), plus `@fission-ai/openspec` for spec-driven workflows.
-8. **VS Code extensions**: runs `vscode/scripts/install-extensions.sh` if `code` is on PATH; otherwise prints a skip note.
-9. **Default shell**: sets zsh via `chsh`. If `chsh` fails (common in some WSL setups), prints clear manual fallback instructions instead of aborting.
+`install.sh` is a thin orchestrator that runs every module under `install/[0-9]*.sh` in numeric order. Each module is **standalone-runnable** and **idempotent** — to run a single phase, invoke the file directly (e.g. `./install/10-docker.sh`).
+
+| # | Module | What it does |
+|---|--------|--------------|
+| 00 | `00-apt-base.sh` | Base APT packages — build toolchain, zsh, and vendor-apt prereqs (Debian/Ubuntu only). Package list: `install/lists/apt-base.txt`. |
+| 10 | `10-docker.sh` | Adds `download.docker.com` apt repo and installs Docker CE + Compose plugin; adds user to `docker` group. |
+| 20 | `20-hashicorp.sh` | Adds `apt.releases.hashicorp.com` apt repo and installs `terraform-ls`. |
+| 21 | `21-eza.sh` | Adds `deb.gierens.de` apt repo and installs `eza`. |
+| 22 | `22-httpie.sh` | Adds `packages.httpie.io` apt repo and installs `httpie`. |
+| 23 | `23-trippy.sh` | Adds the `ppa:fujiapple/trippy` PPA and installs `trippy`. |
+| 30 | `30-homebrew.sh` | Installs Homebrew non-interactively if missing (else `brew update`), then runs `brew bundle` against the repo `Brewfile`. |
+| 40 | `40-mise.sh` | Installs `mise` (runtime version manager) via the upstream installer. |
+| 41 | `41-uv.sh` | Installs `uv` (Python package manager) via the upstream installer. |
+| 42 | `42-marksman.sh` | Drops the `marksman` Markdown LSP binary into `~/.local/bin`. |
+| 50 | `50-uv-tools.sh` | `uv tool install` for everything in `install/lists/uv-tools.txt` (`pyright`). |
+| 60 | `60-symlinks.sh` | Symlinks `zsh/*`, `vscode/{settings,keybindings}.json`, and everything under `claude_code/` (except READMEs) into `~/`. Backs up existing real files to `<file>.bak`. |
+| 70 | `70-node.sh` | Installs `nvm` if missing, then installs the Node version from `.nvmrc` (`lts/*`) and aliases it as default. |
+| 80 | `80-npm-globals.sh` | `npm install -g` for everything in `install/lists/npm-globals.txt` (TypeScript + LSPs, OpenSpec). |
+| 90 | `90-vscode.sh` | Delegates to `vscode/scripts/install-extensions.sh` if `code` is on PATH; otherwise prints a skip note. |
+| 99 | `99-shell.sh` | Sets zsh as the default shell via `chsh`. If `chsh` fails (common in some WSL setups), prints clear manual fallback instructions instead of aborting. |
+
+Shared helpers (logging, apt-repo registration, list parsing, brew shellenv) live in `install/_lib.sh` and are sourced by every module.
 
 ## Structure
 
@@ -48,7 +58,7 @@ dotfiles/
 
 ### CLI Tools
 
-Tools split between Homebrew (no vendor apt repo) and vendor apt repos (fresh upstream releases via APT). See [Brewfile](Brewfile) for the brew set; [install.sh](install.sh) section 1 for the apt repos.
+Tools split between Homebrew (no vendor apt repo) and vendor apt repos (fresh upstream releases via APT). See [Brewfile](Brewfile) for the brew set; the `install/[12]?-*.sh` modules for the vendor apt repos.
 
 | Tool | Source | Description |
 |------|--------|-------------|

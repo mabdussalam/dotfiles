@@ -1,0 +1,14 @@
+# Base APT packages — build toolchain, shell, and the prerequisites
+# (ca-certificates, gnupg, lsb-release, software-properties-common) that
+# the vendor-apt repo modules need before they can run.
+build-essential
+procps
+curl
+wget
+file
+git
+zsh
+ca-certificates
+gnupg
+lsb-release
+software-properties-common
