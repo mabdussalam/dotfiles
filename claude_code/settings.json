@@ -16,6 +16,8 @@
         "pyright-lsp@claude-plugins-official": true,
         "typescript-lsp@claude-plugins-official": true
     },
+    "theme": "dark",
+    "skipAutoPermissionPrompt": true,
     "hooks": {
         "PostToolUse": [
             {
