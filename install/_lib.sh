@@ -50,6 +50,42 @@ load_brew_shellenv() {
     fi
 }
 
+# --- file copy -------------------------------------------------------------
+# _copy SRC DST — copy SRC → DST with bootstrap semantics.
+# If DST exists, skip (preserve local edits). With FORCE=1, back DST up to
+# <DST>.bak and overwrite. Legacy symlinks from the previous symlink-based
+# installer are removed before copying. Creates DST's parent dir if needed.
+_copy() {
+    local src="$1"
+    local dst="$2"
+    local dst_dir
+    dst_dir="$(dirname "$dst")"
+    mkdir -p "$dst_dir"
+
+    if [[ -L "$dst" ]]; then
+        log "[migrate] removing symlink $dst"
+        rm "$dst"
+    fi
+
+    if [[ -e "$dst" ]]; then
+        if [[ "${FORCE:-0}" == "1" ]]; then
+            log "[backup] $dst → ${dst}.bak"
+            rm -rf "${dst}.bak"
+            mv "$dst" "${dst}.bak"
+        else
+            log "[skip] $dst exists (FORCE=1 to overwrite)"
+            return
+        fi
+    fi
+
+    if [[ -d "$src" ]]; then
+        cp -R "$src" "$dst"
+    else
+        cp "$src" "$dst"
+    fi
+    log "[copied] $src → $dst"
+}
+
 # --- list files ------------------------------------------------------------
 # read_list NAME — print non-comment, non-blank items from lists/NAME.txt.
 # Strips inline "# comment" tails and surrounding whitespace.
