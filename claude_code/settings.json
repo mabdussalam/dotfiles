@@ -1,34 +1,37 @@
 {
-    "model": "opus",
-    "effortLevel": "xhigh",
-    "cleanupPeriodDays": 365,
-    "env": {
-        "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-        "BASH_MAX_OUTPUT_LENGTH": "50000"
-    },
-    "attribution": {
-        "commit": "",
-        "pr": ""
-    },
-    "enabledPlugins": {
-        "superpowers@claude-plugins-official": true,
-        "context7@claude-plugins-official": true,
-        "pyright-lsp@claude-plugins-official": true,
-        "typescript-lsp@claude-plugins-official": true
-    },
-    "theme": "dark",
-    "skipAutoPermissionPrompt": true,
-    "hooks": {
-        "PostToolUse": [
-            {
-                "matcher": "Write|Edit|MultiEdit",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "~/.claude/hooks/post-edit-fmt.sh"
-                    }
-                ]
-            }
+  "model": "opus",
+  "effortLevel": "high",
+  "cleanupPeriodDays": 365,
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
+    "BASH_MAX_OUTPUT_LENGTH": "50000",
+    "CLAUDE_CODE_AUTO_CONNECT_IDE": "false",
+    "CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL": "1"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "theme": "dark",
+  "skipAutoPermissionPrompt": true,
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/post-edit-fmt.sh"
+          }
         ]
-    }
+      }
+    ]
+  }
 }
