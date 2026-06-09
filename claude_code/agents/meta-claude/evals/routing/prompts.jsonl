@@ -1,0 +1,32 @@
+{"id": "skill-creator-01", "prompt": "create a skill that helps me format SQL queries", "expected": "skill-creator"}
+{"id": "skill-creator-02", "prompt": "iterate on this skill — improve the description so it triggers more reliably", "expected": "skill-creator"}
+{"id": "skill-creator-03", "prompt": "eval this skill's triggering accuracy", "expected": "skill-creator"}
+{"id": "mcp-builder-01", "prompt": "build an MCP server in Python that exposes my Notion workspace", "expected": "mcp-builder"}
+{"id": "mcp-builder-02", "prompt": "write an MCP server in TypeScript for our internal ticketing system", "expected": "mcp-builder"}
+{"id": "mcp-builder-03", "prompt": "I need to author a new MCP server for our REST API", "expected": "mcp-builder"}
+{"id": "create-subagent-01", "prompt": "create a subagent that reviews TypeScript PRs", "expected": "create-subagent"}
+{"id": "create-subagent-02", "prompt": "scaffold an agent definition for handling SQL migrations", "expected": "create-subagent"}
+{"id": "create-subagent-03", "prompt": "I want a new subagent specialized in dependency upgrades", "expected": "create-subagent"}
+{"id": "create-hook-01", "prompt": "create a hook that runs prettier on every JS file edit", "expected": "create-hook"}
+{"id": "create-hook-02", "prompt": "fire ruff format after Python writes", "expected": "create-hook"}
+{"id": "create-hook-03", "prompt": "add a hook that blocks committing .env files", "expected": "create-hook"}
+{"id": "add-mcp-server-01", "prompt": "register the Linear MCP server in my project's .mcp.json", "expected": "add-mcp-server"}
+{"id": "add-mcp-server-02", "prompt": "add the Slack MCP server to my config", "expected": "add-mcp-server"}
+{"id": "add-mcp-server-03", "prompt": "connect to the GitHub MCP server", "expected": "add-mcp-server"}
+{"id": "modify-settings-01", "prompt": "change my settings.json to allow npm commands", "expected": "modify-settings"}
+{"id": "modify-settings-02", "prompt": "set the model to opus in user settings", "expected": "modify-settings"}
+{"id": "modify-settings-03", "prompt": "stop allowing curl in this project", "expected": "modify-settings"}
+{"id": "create-plugin-01", "prompt": "make this skill into a plugin", "expected": "create-plugin"}
+{"id": "create-plugin-02", "prompt": "bundle my dotfiles agents into a plugin", "expected": "create-plugin"}
+{"id": "create-plugin-03", "prompt": "promote my local .claude/ skills to a publishable plugin", "expected": "create-plugin"}
+{"id": "doctor-01", "prompt": "audit my Claude Code setup", "expected": "doctor"}
+{"id": "doctor-02", "prompt": "what's wrong with my .claude/ config?", "expected": "doctor"}
+{"id": "doctor-03", "prompt": "run doctor on my Claude config", "expected": "doctor"}
+{"id": "inline-01", "prompt": "what's the difference between a skill and a subagent?", "expected": null}
+{"id": "inline-02", "prompt": "what does maxSkillDescriptionChars control?", "expected": null}
+{"id": "inline-03", "prompt": "is exit code 1 from a hook blocking?", "expected": null}
+{"id": "inline-diagnose-01", "prompt": "why isn't my hook firing?", "expected": null}
+{"id": "inline-diagnose-02", "prompt": "my skill isn't being invoked — why?", "expected": null}
+{"id": "ask-01", "prompt": "I want claude to format files on save", "expected": "ASK"}
+{"id": "ask-02", "prompt": "make claude check for security issues automatically when I edit code", "expected": "ASK"}
+{"id": "ask-03", "prompt": "set up MCP for Notion", "expected": "ASK"}

@@ -1,0 +1,727 @@
+{
+  "timestamp_utc": "2026-05-27T11-54-29Z",
+  "model": null,
+  "num_prompts": 32,
+  "runs_per_prompt": 3,
+  "results": [
+    {
+      "id": "skill-creator-01",
+      "prompt": "create a skill that helps me format SQL queries",
+      "expected": "skill-creator",
+      "runs": [
+        {
+          "observed": "skill-creator",
+          "duration_sec": 4.86
+        },
+        {
+          "observed": "skill-creator",
+          "duration_sec": 5.01
+        },
+        {
+          "observed": "skill-creator",
+          "duration_sec": 5.33
+        }
+      ],
+      "majority_observed": "skill-creator",
+      "pass": true
+    },
+    {
+      "id": "skill-creator-02",
+      "prompt": "iterate on this skill \u2014 improve the description so it triggers more reliably",
+      "expected": "skill-creator",
+      "runs": [
+        {
+          "observed": "skill-creator",
+          "duration_sec": 6.6
+        },
+        {
+          "observed": "skill-creator",
+          "duration_sec": 8.45
+        },
+        {
+          "observed": "skill-creator",
+          "duration_sec": 7.18
+        }
+      ],
+      "majority_observed": "skill-creator",
+      "pass": true
+    },
+    {
+      "id": "skill-creator-03",
+      "prompt": "eval this skill's triggering accuracy",
+      "expected": "skill-creator",
+      "runs": [
+        {
+          "observed": "skill-creator",
+          "duration_sec": 5.69
+        },
+        {
+          "observed": "skill-creator",
+          "duration_sec": 5.96
+        },
+        {
+          "observed": "skill-creator",
+          "duration_sec": 6.43
+        }
+      ],
+      "majority_observed": "skill-creator",
+      "pass": true
+    },
+    {
+      "id": "mcp-builder-01",
+      "prompt": "build an MCP server in Python that exposes my Notion workspace",
+      "expected": "mcp-builder",
+      "runs": [
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 5.01
+        },
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 4.7
+        },
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 4.95
+        }
+      ],
+      "majority_observed": "mcp-builder",
+      "pass": true
+    },
+    {
+      "id": "mcp-builder-02",
+      "prompt": "write an MCP server in TypeScript for our internal ticketing system",
+      "expected": "mcp-builder",
+      "runs": [
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 5.43
+        },
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 4.84
+        },
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 6.02
+        }
+      ],
+      "majority_observed": "mcp-builder",
+      "pass": true
+    },
+    {
+      "id": "mcp-builder-03",
+      "prompt": "I need to author a new MCP server for our REST API",
+      "expected": "mcp-builder",
+      "runs": [
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 4.45
+        },
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 5.7
+        },
+        {
+          "observed": "mcp-builder",
+          "duration_sec": 8.57
+        }
+      ],
+      "majority_observed": "mcp-builder",
+      "pass": true
+    },
+    {
+      "id": "create-subagent-01",
+      "prompt": "create a subagent that reviews TypeScript PRs",
+      "expected": "create-subagent",
+      "runs": [
+        {
+          "observed": "create-subagent",
+          "duration_sec": 4.41
+        },
+        {
+          "observed": "create-subagent",
+          "duration_sec": 4.99
+        },
+        {
+          "observed": "create-subagent",
+          "duration_sec": 4.44
+        }
+      ],
+      "majority_observed": "create-subagent",
+      "pass": true
+    },
+    {
+      "id": "create-subagent-02",
+      "prompt": "scaffold an agent definition for handling SQL migrations",
+      "expected": "create-subagent",
+      "runs": [
+        {
+          "observed": "create-subagent",
+          "duration_sec": 5.0
+        },
+        {
+          "observed": "create-subagent",
+          "duration_sec": 4.88
+        },
+        {
+          "observed": "create-subagent",
+          "duration_sec": 4.34
+        }
+      ],
+      "majority_observed": "create-subagent",
+      "pass": true
+    },
+    {
+      "id": "create-subagent-03",
+      "prompt": "I want a new subagent specialized in dependency upgrades",
+      "expected": "create-subagent",
+      "runs": [
+        {
+          "observed": "create-subagent",
+          "duration_sec": 4.57
+        },
+        {
+          "observed": "create-subagent",
+          "duration_sec": 4.62
+        },
+        {
+          "observed": "create-subagent",
+          "duration_sec": 7.41
+        }
+      ],
+      "majority_observed": "create-subagent",
+      "pass": true
+    },
+    {
+      "id": "create-hook-01",
+      "prompt": "create a hook that runs prettier on every JS file edit",
+      "expected": "create-hook",
+      "runs": [
+        {
+          "observed": "create-hook",
+          "duration_sec": 4.53
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 5.32
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 6.16
+        }
+      ],
+      "majority_observed": "create-hook",
+      "pass": true
+    },
+    {
+      "id": "create-hook-02",
+      "prompt": "fire ruff format after Python writes",
+      "expected": "create-hook",
+      "runs": [
+        {
+          "observed": "create-hook",
+          "duration_sec": 4.21
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 4.96
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 5.45
+        }
+      ],
+      "majority_observed": "create-hook",
+      "pass": true
+    },
+    {
+      "id": "create-hook-03",
+      "prompt": "add a hook that blocks committing .env files",
+      "expected": "create-hook",
+      "runs": [
+        {
+          "observed": "create-hook",
+          "duration_sec": 4.93
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 4.96
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 5.33
+        }
+      ],
+      "majority_observed": "create-hook",
+      "pass": true
+    },
+    {
+      "id": "add-mcp-server-01",
+      "prompt": "register the Linear MCP server in my project's .mcp.json",
+      "expected": "add-mcp-server",
+      "runs": [
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 5.16
+        },
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 5.51
+        },
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 5.56
+        }
+      ],
+      "majority_observed": "add-mcp-server",
+      "pass": true
+    },
+    {
+      "id": "add-mcp-server-02",
+      "prompt": "add the Slack MCP server to my config",
+      "expected": "add-mcp-server",
+      "runs": [
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 4.25
+        },
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 4.27
+        },
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 4.81
+        }
+      ],
+      "majority_observed": "add-mcp-server",
+      "pass": true
+    },
+    {
+      "id": "add-mcp-server-03",
+      "prompt": "connect to the GitHub MCP server",
+      "expected": "add-mcp-server",
+      "runs": [
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 5.03
+        },
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 4.95
+        },
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 6.15
+        }
+      ],
+      "majority_observed": "add-mcp-server",
+      "pass": true
+    },
+    {
+      "id": "modify-settings-01",
+      "prompt": "change my settings.json to allow npm commands",
+      "expected": "modify-settings",
+      "runs": [
+        {
+          "observed": "modify-settings",
+          "duration_sec": 5.3
+        },
+        {
+          "observed": "modify-settings",
+          "duration_sec": 5.77
+        },
+        {
+          "observed": "update-config",
+          "duration_sec": 5.21
+        }
+      ],
+      "majority_observed": "modify-settings",
+      "pass": true
+    },
+    {
+      "id": "modify-settings-02",
+      "prompt": "set the model to opus in user settings",
+      "expected": "modify-settings",
+      "runs": [
+        {
+          "observed": "modify-settings",
+          "duration_sec": 4.49
+        },
+        {
+          "observed": "modify-settings",
+          "duration_sec": 4.69
+        },
+        {
+          "observed": "modify-settings",
+          "duration_sec": 4.71
+        }
+      ],
+      "majority_observed": "modify-settings",
+      "pass": true
+    },
+    {
+      "id": "modify-settings-03",
+      "prompt": "stop allowing curl in this project",
+      "expected": "modify-settings",
+      "runs": [
+        {
+          "observed": "modify-settings",
+          "duration_sec": 4.6
+        },
+        {
+          "observed": "update-config",
+          "duration_sec": 7.03
+        },
+        {
+          "observed": "update-config",
+          "duration_sec": 8.3
+        }
+      ],
+      "majority_observed": "update-config",
+      "pass": false
+    },
+    {
+      "id": "create-plugin-01",
+      "prompt": "make this skill into a plugin",
+      "expected": "create-plugin",
+      "runs": [
+        {
+          "observed": "create-plugin",
+          "duration_sec": 8.87
+        },
+        {
+          "observed": "create-plugin",
+          "duration_sec": 7.96
+        },
+        {
+          "observed": "create-plugin",
+          "duration_sec": 6.58
+        }
+      ],
+      "majority_observed": "create-plugin",
+      "pass": true
+    },
+    {
+      "id": "create-plugin-02",
+      "prompt": "bundle my dotfiles agents into a plugin",
+      "expected": "create-plugin",
+      "runs": [
+        {
+          "observed": "create-plugin",
+          "duration_sec": 4.87
+        },
+        {
+          "observed": "create-plugin",
+          "duration_sec": 4.71
+        },
+        {
+          "observed": "create-plugin",
+          "duration_sec": 4.49
+        }
+      ],
+      "majority_observed": "create-plugin",
+      "pass": true
+    },
+    {
+      "id": "create-plugin-03",
+      "prompt": "promote my local .claude/ skills to a publishable plugin",
+      "expected": "create-plugin",
+      "runs": [
+        {
+          "observed": "create-plugin",
+          "duration_sec": 4.72
+        },
+        {
+          "observed": "create-plugin",
+          "duration_sec": 4.68
+        },
+        {
+          "observed": "create-plugin",
+          "duration_sec": 6.19
+        }
+      ],
+      "majority_observed": "create-plugin",
+      "pass": true
+    },
+    {
+      "id": "doctor-01",
+      "prompt": "audit my Claude Code setup",
+      "expected": "doctor",
+      "runs": [
+        {
+          "observed": "doctor",
+          "duration_sec": 4.7
+        },
+        {
+          "observed": "doctor",
+          "duration_sec": 4.32
+        },
+        {
+          "observed": "doctor",
+          "duration_sec": 4.73
+        }
+      ],
+      "majority_observed": "doctor",
+      "pass": true
+    },
+    {
+      "id": "doctor-02",
+      "prompt": "what's wrong with my .claude/ config?",
+      "expected": "doctor",
+      "runs": [
+        {
+          "observed": "doctor",
+          "duration_sec": 4.71
+        },
+        {
+          "observed": "doctor",
+          "duration_sec": 4.34
+        },
+        {
+          "observed": "doctor",
+          "duration_sec": 5.02
+        }
+      ],
+      "majority_observed": "doctor",
+      "pass": true
+    },
+    {
+      "id": "doctor-03",
+      "prompt": "run doctor on my Claude config",
+      "expected": "doctor",
+      "runs": [
+        {
+          "observed": "doctor",
+          "duration_sec": 4.4
+        },
+        {
+          "observed": "doctor",
+          "duration_sec": 4.3
+        },
+        {
+          "observed": "doctor",
+          "duration_sec": 4.42
+        }
+      ],
+      "majority_observed": "doctor",
+      "pass": true
+    },
+    {
+      "id": "inline-01",
+      "prompt": "what's the difference between a skill and a subagent?",
+      "expected": null,
+      "runs": [
+        {
+          "observed": null,
+          "duration_sec": 15.43
+        },
+        {
+          "observed": null,
+          "duration_sec": 19.39
+        },
+        {
+          "observed": null,
+          "duration_sec": 20.37
+        }
+      ],
+      "majority_observed": null,
+      "pass": true
+    },
+    {
+      "id": "inline-02",
+      "prompt": "what does maxSkillDescriptionChars control?",
+      "expected": null,
+      "runs": [
+        {
+          "observed": null,
+          "duration_sec": 13.46
+        },
+        {
+          "observed": null,
+          "duration_sec": 13.53
+        },
+        {
+          "observed": null,
+          "duration_sec": 11.97
+        }
+      ],
+      "majority_observed": null,
+      "pass": true
+    },
+    {
+      "id": "inline-03",
+      "prompt": "is exit code 1 from a hook blocking?",
+      "expected": null,
+      "runs": [
+        {
+          "observed": null,
+          "duration_sec": 9.52
+        },
+        {
+          "observed": null,
+          "duration_sec": 12.23
+        },
+        {
+          "observed": null,
+          "duration_sec": 9.68
+        }
+      ],
+      "majority_observed": null,
+      "pass": true
+    },
+    {
+      "id": "inline-diagnose-01",
+      "prompt": "why isn't my hook firing?",
+      "expected": null,
+      "runs": [
+        {
+          "observed": null,
+          "duration_sec": 23.45
+        },
+        {
+          "observed": null,
+          "duration_sec": 34.49
+        },
+        {
+          "observed": null,
+          "duration_sec": 28.38
+        }
+      ],
+      "majority_observed": null,
+      "pass": true
+    },
+    {
+      "id": "inline-diagnose-02",
+      "prompt": "my skill isn't being invoked \u2014 why?",
+      "expected": null,
+      "runs": [
+        {
+          "observed": "ASK",
+          "duration_sec": 22.38
+        },
+        {
+          "observed": "ASK",
+          "duration_sec": 27.46
+        },
+        {
+          "observed": "ASK",
+          "duration_sec": 33.41
+        }
+      ],
+      "majority_observed": "ASK",
+      "pass": false
+    },
+    {
+      "id": "ask-01",
+      "prompt": "I want claude to format files on save",
+      "expected": "ASK",
+      "runs": [
+        {
+          "observed": "create-hook",
+          "duration_sec": 7.07
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 10.55
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 24.87
+        }
+      ],
+      "majority_observed": "create-hook",
+      "pass": false
+    },
+    {
+      "id": "ask-02",
+      "prompt": "make claude check for security issues automatically when I edit code",
+      "expected": "ASK",
+      "runs": [
+        {
+          "observed": "create-hook",
+          "duration_sec": 4.79
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 4.76
+        },
+        {
+          "observed": "create-hook",
+          "duration_sec": 5.99
+        }
+      ],
+      "majority_observed": "create-hook",
+      "pass": false
+    },
+    {
+      "id": "ask-03",
+      "prompt": "set up MCP for Notion",
+      "expected": "ASK",
+      "runs": [
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 5.07
+        },
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 4.88
+        },
+        {
+          "observed": "add-mcp-server",
+          "duration_sec": 5.62
+        }
+      ],
+      "majority_observed": "add-mcp-server",
+      "pass": false
+    }
+  ],
+  "summary": {
+    "total": 32,
+    "passed": 27,
+    "accuracy": 0.84375,
+    "by_expected": {
+      "skill-creator": {
+        "total": 3,
+        "passed": 3
+      },
+      "mcp-builder": {
+        "total": 3,
+        "passed": 3
+      },
+      "create-subagent": {
+        "total": 3,
+        "passed": 3
+      },
+      "create-hook": {
+        "total": 3,
+        "passed": 3
+      },
+      "add-mcp-server": {
+        "total": 3,
+        "passed": 3
+      },
+      "modify-settings": {
+        "total": 3,
+        "passed": 2
+      },
+      "create-plugin": {
+        "total": 3,
+        "passed": 3
+      },
+      "doctor": {
+        "total": 3,
+        "passed": 3
+      },
+      "null": {
+        "total": 5,
+        "passed": 4
+      },
+      "ASK": {
+        "total": 3,
+        "passed": 0
+      }
+    }
+  }
+}
