@@ -4,8 +4,9 @@
 # Standalone-runnable: this script touches ONLY ~/.claude/ and never zsh,
 # VS Code, apt, or anything else. Re-running is safe — existing targets are
 # preserved by default, so local edits survive. Set FORCE=1 to overwrite,
-# backing each existing target up to <target>.bak first (same semantics as
-# the shared _copy helper used by 60-copy-configs.sh).
+# moving each existing target into a timestamped backup dir
+# (~/.dotfiles-backups/<run>/, outside the scanned config tree) first — same
+# semantics as the shared _copy helper used by 60-copy-configs.sh.
 #
 # Set DRYRUN=1 to preview without writing anything: _copy logs the action it
 # would take, and this script's own mkdir/rm migration writes (below) are

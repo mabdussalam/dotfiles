@@ -2,7 +2,8 @@
 # Copy zsh and VS Code dotfiles into place (bootstrap semantics).
 # Existing targets are preserved by default — re-running is a no-op for any
 # path that already exists, so local tweaks survive. Set FORCE=1 to overwrite,
-# backing the existing target up to <target>.bak first.
+# moving the existing target into a timestamped backup dir
+# (~/.dotfiles-backups/<run>/) first.
 #
 # Claude Code configs are handled by 61-copy-claude.sh.
 set -euo pipefail

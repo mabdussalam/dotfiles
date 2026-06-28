@@ -50,11 +50,33 @@ load_brew_shellenv() {
     fi
 }
 
+# --- backups ---------------------------------------------------------------
+# Where _copy moves a pre-existing target before overwriting it under FORCE=1.
+# Backups go OUT of the live config tree — never inside ~/.claude/skills/ (or
+# agents/, hooks/), which Claude Code would otherwise scan and load as
+# duplicate skills — into a per-run, path-mirroring directory. Each run gets a
+# fresh timestamped dir, so backups accumulate as history instead of clobbering
+# a single <target>.bak. Export DOTFILES_BACKUP_RUN from a wrapper (e.g.
+# install.sh) to group every module of one run under a single dir.
+: "${DOTFILES_BACKUP_ROOT:=$HOME/.dotfiles-backups}"
+: "${DOTFILES_BACKUP_RUN:=$(date +%Y%m%dT%H%M%S)}"
+
+# _backup_dest DST — echo the out-of-tree backup path for DST, mirroring its
+# location under <root>/<run>/. Targets under $HOME mirror their home-relative
+# path; anything else mirrors its absolute path (leading slash stripped).
+_backup_dest() {
+    local dst="$1" rel
+    rel="${dst#"$HOME"/}"
+    [[ "$rel" == "$dst" ]] && rel="${dst#/}"
+    printf '%s/%s/%s\n' "$DOTFILES_BACKUP_ROOT" "$DOTFILES_BACKUP_RUN" "$rel"
+}
+
 # --- file copy -------------------------------------------------------------
 # _copy SRC DST — copy SRC → DST with bootstrap semantics.
-# If DST exists, skip (preserve local edits). With FORCE=1, back DST up to
-# <DST>.bak and overwrite. Legacy symlinks from the previous symlink-based
-# installer are removed before copying. Creates DST's parent dir if needed.
+# If DST exists, skip (preserve local edits). With FORCE=1, move DST into the
+# per-run backup dir (see _backup_dest) and overwrite. Legacy symlinks from the
+# previous symlink-based installer are removed before copying. Creates DST's
+# parent dir if needed.
 # With DRYRUN=1, performs NO filesystem writes — it walks the exact same
 # skip/backup/overwrite decision tree and logs the action it *would* take
 # ([dry] would copy/skip/backup/remove …), so the preview cannot diverge from
@@ -83,13 +105,15 @@ _copy() {
     # mis-reporting a soon-to-be-removed symlink as a backup target.
     if [[ -e "$dst" && ! -L "$dst" ]]; then
         if [[ "${FORCE:-0}" == "1" ]]; then
+            local backup
+            backup="$(_backup_dest "$dst")"
             if [[ "$dry" == "1" ]]; then
-                log "[dry] would backup $dst → ${dst}.bak, then overwrite from $src"
+                log "[dry] would back up $dst → $backup, then overwrite from $src"
                 return
             fi
-            log "[backup] $dst → ${dst}.bak"
-            rm -rf "${dst}.bak"
-            mv "$dst" "${dst}.bak"
+            log "[backup] $dst → $backup"
+            mkdir -p "$(dirname "$backup")"
+            mv "$dst" "$backup"
         else
             log "[skip] $dst exists (FORCE=1 to overwrite)"
             return

@@ -11,7 +11,7 @@ Personal dotfiles for macOS/Linux (Ubuntu/Kubuntu, native and WSL). It is **sour
 ```bash
 ./install.sh                      # full setup — runs every install/[0-9]*.sh in numeric order
 ./install/61-copy-claude.sh       # run ONE phase standalone (each module is independently runnable)
-FORCE=1 ./install/61-copy-claude.sh   # overwrite existing targets (backs up to <target>.bak first)
+FORCE=1 ./install/61-copy-claude.sh   # overwrite existing targets (backs each up to ~/.dotfiles-backups/<run>/ first)
 ./bootstrap.zsh                   # brew-only convenience re-run
 ```
 
@@ -33,7 +33,7 @@ Validator output contract: first stdout line is `PASS` / `PASS-WITH-WARNINGS` / 
 `install.sh` is a thin orchestrator: it globs `install/[0-9]*.sh` and runs each in numeric order. The numeric prefix encodes ordering (apt base → vendor repos → homebrew → runtimes → config copy → node → npm → vscode → shell). Every module is **standalone-runnable and idempotent** — re-running is safe and skips already-done work.
 
 - **`install/_lib.sh`** is sourced (not executed) by every module. It owns all shared logic: `log/warn/die`, platform probes (`is_debian`, `ubuntu_codename`), idempotent apt-repo registration (`add_apt_repo`), brew shellenv loading, list parsing (`read_list`), and the `_copy` helper.
-- **`_copy` defines "bootstrap semantics"** used everywhere configs land in `$HOME`: if the target exists, **skip** it (local edits survive re-runs); with `FORCE=1`, back it up to `<target>.bak` and overwrite. Legacy symlinks from the older symlink-based installer are removed before copying. This is why a plain re-run never clobbers your live `~/.claude/` or `~/.zshrc` — you must pass `FORCE=1` to push repo changes out.
+- **`_copy` defines "bootstrap semantics"** used everywhere configs land in `$HOME`: if the target exists, **skip** it (local edits survive re-runs); with `FORCE=1`, move it into a timestamped backup dir (`~/.dotfiles-backups/<run>/`, mirroring the target's path and kept *outside* the live config tree so backups are never rediscovered as skills) and overwrite. Legacy symlinks from the older symlink-based installer are removed before copying. This is why a plain re-run never clobbers your live `~/.claude/` or `~/.zshrc` — you must pass `FORCE=1` to push repo changes out.
 - **Package/tool lists** live in `install/lists/*.txt` (apt-base, npm-globals, uv-tools), parsed by `read_list` (strips `#` comments and blanks). Add a tool by editing the list, not the module.
 - `60-copy-configs.sh` handles zsh + VS Code; `61-copy-claude.sh` handles only `~/.claude/`. Keep that separation — `61` is deliberately scoped so it touches nothing else.
 
