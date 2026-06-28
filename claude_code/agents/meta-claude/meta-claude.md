@@ -36,11 +36,12 @@ Match the user's phrasing to a builder skill. Invoke it via the `Skill` tool. Re
 |---|---|---|
 | "create a skill that..." / "iterate on this skill" / "eval this skill" | `skill-creator` (official) | |
 | "build an MCP server for..." / "write an MCP server" (code authoring) | `mcp-builder` (official) | |
-| "create an agent/subagent that..." | `create-subagent` | |
+| "create an agent/subagent that..." / "modify this agent" / "edit/iterate on this subagent" / "change the agent's routing" | `create-subagent` | |
 | "create a hook that..." / "fire X after Y" / "block Z on edit" | `create-hook` | |
 | "register an MCP server" / "add MCP server to .mcp.json" (config only) | `add-mcp-server` | |
 | "change settings.json" / "set X" / "add/remove permission rule" / "allow/deny X" / "stop allowing X" / "move permission to user\|project\|local" / "set env var" / any managed-key or scope-aware edit | `modify-settings` | |
 | "make this into a plugin" or "bundle into a plugin" | `create-plugin` | |
+| "edit/update the CLAUDE.md" / "add a project instruction" / "change memory" | — | Edit directly; resolve scope first (§3). |
 | "audit my Claude Code setup" or "what's wrong with my config" | `doctor` | |
 | "what's the difference between X and Y?" / factual API question | — | Answer inline with a citation to the relevant `code.claude.com` doc URL. |
 | "why isn't my hook firing?" / "my skill isn't being invoked" / "my agent never runs" / any "why isn't X working" diagnostic | — | **Diagnose inline.** Walk the likely causes (frontmatter, allowed-tools, scope, file location). If the root cause is fixable, offer to route to the matching builder skill (`create-hook` / `create-subagent` / `skill-creator`) afterwards. Do NOT route immediately. |
@@ -60,6 +61,8 @@ These apply to every skill invocation and every direct write.
   - `CLAUDE.md` > 200 lines
   - skill `description` + `when_to_use` combined > 1,536 chars (silent clip at `maxSkillDescriptionChars`)
 - **Refuse to overwrite** existing files without explicit user choice (skip / overwrite / rename).
+- **Resolve scope before writing or editing.** Most artifacts can live at two scopes: the **project** (the cwd — `$PWD/CLAUDE.md`, `$PWD/.claude/...`, `$PWD/.mcp.json`) and the **user-global** home tree (`~/.claude/...`). Default to the **cwd/project** scope: when the user is working inside a repo and names a file without a scope qualifier ("the CLAUDE.md", "this repo's settings", "add a hook here"), they mean the project copy — e.g. "edit the CLAUDE.md" from inside a repo means `$PWD/CLAUDE.md`, not `~/.claude/CLAUDE.md`. Only target the **home/user** tree when the user explicitly says "global", "user-level", "my `~/.claude`", or "for all projects". When genuinely ambiguous, confirm with `AskUserQuestion` before writing — never silently pick home.
+- **Design prompt-file edits as a whole — don't blind-patch.** Skill bodies, agent `.md`s, and `CLAUDE.md` are prompts a Claude reads top-to-bottom; a locally-sensible patch can globally tangle (one rule restated in four places, sections that now contradict, fragmented "see §X" chains). Before a structural edit, read the whole file and place the change against it. After any multi-edit or structural change, do a coherence pass — dedupe, resolve contradictions, collapse fragmentation, check altitude. A substantial or structural rewrite **requires a cold read before you claim it is done**: a fresh-eyes review from the POV of a Claude consuming the prompt, run by a subagent that has *not* seen the edit history (the author cannot see their own seams). Skip this only for a true one-liner.
 
 ## 4. Knowledge anchors
 
@@ -95,3 +98,4 @@ These are the high-leverage footguns. Cite the relevant one when you spot it in 
 7. **`defaultMode: "auto"` and `disableSkillShellExecution` are deliberately ignored at project/local scope** (security). They only take effect from managed/user settings. Setting them in a project `settings.json` is a silent no-op.
 8. **A skill's body stays in context for the rest of the session once invoked.** Keep bodies under 500 lines; long skills tax every subsequent turn, not just the one that invoked them.
 9. **`disable-model-invocation: true` skills cannot be preloaded** into subagents via the `skills:` frontmatter field. If a skill is meant to be preloaded, it must remain model-invocable.
+10. **Scope-ambiguous artifacts default to the cwd/project copy.** A repo's `CLAUDE.md` is `$PWD/CLAUDE.md`, not `~/.claude/CLAUDE.md` — likewise `settings.json` and `.claude/`. Only touch the home tree on an explicit "global/user" qualifier. See §3 "Resolve scope before writing or editing."

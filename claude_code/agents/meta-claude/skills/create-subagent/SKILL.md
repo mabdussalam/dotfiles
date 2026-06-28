@@ -1,23 +1,43 @@
 ---
 name: create-subagent
 description: >
-  Bootstrap a new Claude Code subagent — write an agent .md file with valid
-  frontmatter at the user-chosen path, then lint it. Use when the user says
-  "create an agent", "create a subagent", "scaffold an agent", "new agent definition".
+  Create or modify a Claude Code subagent — author a new agent .md with valid
+  frontmatter at the user-chosen path, or make targeted edits to an existing
+  one, then lint it. Use when the user says "create an agent", "create a
+  subagent", "scaffold an agent", "new agent definition", "modify this agent",
+  "edit the agent", "iterate on this subagent", "change the agent's routing".
 agent: meta-claude
 disable-model-invocation: false
-argument-hint: "<agent-name> [— short role]"
+argument-hint: "<agent-name> [— role to create, or change to make]"
 allowed-tools: [Read, Write, Edit, Bash, WebFetch, AskUserQuestion]
 ---
 
 # create-subagent
 
-Bootstraps a single Claude Code subagent definition. Writes one `.md` file and
-runs a three-pass lint. Does nothing else.
+Authors or edits a single Claude Code subagent definition. Either writes a new
+`.md` file or makes targeted edits to an existing one, then runs a three-pass
+lint. Does nothing else.
 
-## 1. Inputs
+## 0. Mode — create or modify
 
-Collect from the user (ask via `AskUserQuestion` for anything missing):
+Decide up front, because the two paths diverge:
+
+- **create** — no agent of this name/path exists yet. Collect inputs (§1),
+  choose a scope (§2), author the file (§4), lint (§5).
+- **modify** — an agent file already exists and the user wants it changed
+  (routing tweak, new frontmatter field, reworded description, etc.). Skip
+  scaffolding: locate the file (§2, modify branch), `Read` it, make the
+  smallest targeted `Edit`s that satisfy the request (§4, modify branch),
+  then lint (§5).
+
+If it is unclear which mode applies, ask via `AskUserQuestion`. "Edit / iterate
+on / change this agent" implies **modify**; "create / scaffold a new agent"
+implies **create**.
+
+## 1. Inputs (create mode)
+
+Modify mode skips this — it reads the existing file instead (§2). For a new
+agent, collect from the user (ask via `AskUserQuestion` for anything missing):
 
 - **name** (required) — kebab-case identifier (e.g., `pr-reviewer`). This is
   the routing key; it must match the `name:` frontmatter field exactly.
@@ -30,16 +50,22 @@ Collect from the user (ask via `AskUserQuestion` for anything missing):
 - **isolation** (optional) — set to `worktree` if the agent should run in a
   temporary git worktree.
 
-## 2. Resolve write path
+## 2. Resolve the target path
 
-Ask the user via `AskUserQuestion` which scope:
+**Create mode** — ask the user via `AskUserQuestion` which scope:
 
 - **user-global** → `~/.claude/agents/<name>.md`
 - **project** → `<project-root>/.claude/agents/<name>.md`
 - **custom** → user types an absolute path
 
-If the target file already exists, **refuse to overwrite** without explicit
-confirmation. Re-ask: skip, overwrite, or rename.
+If the target file already exists, stop and ask (skip / overwrite / rename); if
+the user actually wants it changed, that's a **modify** — switch branches.
+
+**Modify mode** — locate the existing file: `$PWD/.claude/agents/<name>.md`
+(project) or `~/.claude/agents/<name>.md` (user-global), or whatever path the
+user names. Resolve scope per meta-claude §3 (cwd/project-first; confirm if both
+copies exist or the target is unclear). `Read` the file before editing so
+changes are targeted, not a blind rewrite.
 
 ## 3. Knowledge anchor — subagent frontmatter shape
 
@@ -55,8 +81,10 @@ value.
 **Optional fields:**
 
 - `tools` — array of tool names; an allowlist (e.g., `[Read, Edit, Bash]`).
-  `Agent(name)` syntax can restrict which subagents this agent may spawn —
-  **moot here**, because subagents cannot spawn subagents at all.
+  `Agent(name)` syntax can restrict which subagents this agent may spawn — but
+  the `Agent` tool is a **no-op while the agent runs as a nested subagent**
+  (subagents can't spawn subagents); it's live only when the agent is loaded as
+  a root persona.
 - `disallowedTools` — applied first if both `tools` and `disallowedTools` are
   present.
 - `model` — `sonnet | opus | haiku | inherit | <full-id>` (e.g.,
@@ -80,9 +108,9 @@ value.
 If uncertain about any field's current schema:
 `WebFetch https://code.claude.com/docs/en/sub-agents.md`.
 
-## 4. Author
+## 4. Author or edit
 
-Write the agent `.md` with:
+**Create mode** — write the agent `.md` with:
 
 1. **YAML frontmatter** using the fields above. Minimal frontmatter is just
    `name` and `description`.
@@ -97,9 +125,19 @@ Write the agent `.md` with:
    - **Output format expected** — what the agent returns to the caller
      (path written + lint status, structured report, etc.).
 
+**Modify mode** — make the smallest `Edit`s that satisfy the request:
+
+- Preserve every section you were not asked to change. Do not rewrite the body.
+- **Do not change `name:`** unless explicitly asked — it is the routing key.
+  Changing it silently re-registers the agent under a new identity and orphans
+  the old one. For a genuine rename, change `name:` *and* the filename, and tell
+  the user the old routing key is now dead.
+- If the edit introduces a frontmatter field, validate it against §3's field
+  list first; `WebFetch` the docs if the field's current shape is unclear.
+
 ## 5. Lint
 
-After writing, run the bundled validator:
+After writing or editing, run the bundled validator:
 
     uv run --quiet --with pyyaml python ~/.claude/skills/create-subagent/scripts/lint.py <agent.md>
 
@@ -109,21 +147,19 @@ The script implements Pass A (frontmatter parse) and Pass B (value-shape: requir
 
 ### Pass C — footgun heuristics
 
-- `tools` includes `Agent` → WARN: subagents cannot spawn other subagents;
-  the `Agent` tool will be unavailable in this agent's runtime regardless.
-- `skills` is non-empty → WARN: preloading puts full skill bodies into the
-  agent prompt on every spawn (expensive). Prefer agent-scoping each skill
-  via the skill's own `agent:` field.
-- Filename does not match `name:` value → WARN: cosmetic only, but
-  confusing. Identity routes by the frontmatter field.
-- `permissionMode: auto` → WARN: research preview; only honored on certain
-  models / providers; parent's mode overrides in most cases.
+Each line is a lint trigger; see §3 for the underlying rationale.
+
+- `tools` includes `Agent` → WARN: no-op while the agent runs as a nested
+  subagent (live only as a root persona).
+- `skills` is non-empty → WARN: preloading is expensive on every spawn.
+- Filename does not match `name:` value → WARN: cosmetic but confusing.
+- `permissionMode: auto` → WARN: research preview; parent's mode usually wins.
 
 ## 6. Report
 
 Print:
 
-- The absolute path written.
+- The absolute path written, and whether it was **created** or **modified**.
 - The lint result (`PASS` / `PASS-WITH-WARNINGS` / `FAIL`).
 - All warnings and failures verbatim.
 
@@ -132,6 +168,6 @@ Do not silently retry.
 
 ## Constraints
 
-- Write **only** the target agent `.md`. Touch no other file.
+- Write or edit **only** the target agent `.md`. Touch no other file.
 - Never commit to git. Never run `git add` / `git commit`.
 - Refuse to overwrite an existing file without explicit user confirmation.

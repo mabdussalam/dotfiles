@@ -7,6 +7,10 @@
 # backing each existing target up to <target>.bak first (same semantics as
 # the shared _copy helper used by 60-copy-configs.sh).
 #
+# Set DRYRUN=1 to preview without writing anything: _copy logs the action it
+# would take, and this script's own mkdir/rm migration writes (below) are
+# likewise guarded. Combine DRYRUN=1 FORCE=1 to preview an overwriting run.
+#
 # Source layout (bundle-aware copy):
 #   claude_code/CLAUDE.md, settings.json     → ~/.claude/<file>
 #   claude_code/skills/<name>/               → ~/.claude/skills/<name>/   (per skill dir)
@@ -30,17 +34,21 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/_lib.sh"
 
 CLAUDE_DIR="$HOME/.claude"
-mkdir -p "$CLAUDE_DIR"
+[[ "${DRYRUN:-0}" == "1" ]] || mkdir -p "$CLAUDE_DIR"
 
 # Migration: if a previous install symlinked whole dirs (skills, hooks, agents),
 # remove those symlinks so we can populate them per-entry.
 for d in skills hooks agents; do
     if [[ -L "$CLAUDE_DIR/$d" ]]; then
-        log "[migrate] removing whole-dir symlink $CLAUDE_DIR/$d"
-        rm "$CLAUDE_DIR/$d"
+        if [[ "${DRYRUN:-0}" == "1" ]]; then
+            log "[dry] would remove whole-dir symlink $CLAUDE_DIR/$d"
+        else
+            log "[migrate] removing whole-dir symlink $CLAUDE_DIR/$d"
+            rm "$CLAUDE_DIR/$d"
+        fi
     fi
 done
-mkdir -p "$CLAUDE_DIR/skills" "$CLAUDE_DIR/hooks" "$CLAUDE_DIR/agents"
+[[ "${DRYRUN:-0}" == "1" ]] || mkdir -p "$CLAUDE_DIR/skills" "$CLAUDE_DIR/hooks" "$CLAUDE_DIR/agents"
 
 for item in "$REPO/claude_code/"*; do
     basename_item="$(basename "$item")"

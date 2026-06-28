@@ -55,20 +55,38 @@ load_brew_shellenv() {
 # If DST exists, skip (preserve local edits). With FORCE=1, back DST up to
 # <DST>.bak and overwrite. Legacy symlinks from the previous symlink-based
 # installer are removed before copying. Creates DST's parent dir if needed.
+# With DRYRUN=1, performs NO filesystem writes — it walks the exact same
+# skip/backup/overwrite decision tree and logs the action it *would* take
+# ([dry] would copy/skip/backup/remove …), so the preview cannot diverge from
+# a real run. DRYRUN composes with FORCE (DRYRUN=1 FORCE=1 previews an
+# overwriting run).
 _copy() {
     local src="$1"
     local dst="$2"
     local dst_dir
     dst_dir="$(dirname "$dst")"
-    mkdir -p "$dst_dir"
+    local dry="${DRYRUN:-0}"
+
+    [[ "$dry" == "1" ]] || mkdir -p "$dst_dir"
 
     if [[ -L "$dst" ]]; then
-        log "[migrate] removing symlink $dst"
-        rm "$dst"
+        if [[ "$dry" == "1" ]]; then
+            log "[dry] would remove symlink $dst"
+        else
+            log "[migrate] removing symlink $dst"
+            rm "$dst"
+        fi
     fi
 
-    if [[ -e "$dst" ]]; then
+    # In a real run the symlink above is already gone, so `! -L` is trivially
+    # true; in a dry run it is still present, and this guard keeps us from
+    # mis-reporting a soon-to-be-removed symlink as a backup target.
+    if [[ -e "$dst" && ! -L "$dst" ]]; then
         if [[ "${FORCE:-0}" == "1" ]]; then
+            if [[ "$dry" == "1" ]]; then
+                log "[dry] would backup $dst → ${dst}.bak, then overwrite from $src"
+                return
+            fi
             log "[backup] $dst → ${dst}.bak"
             rm -rf "${dst}.bak"
             mv "$dst" "${dst}.bak"
@@ -78,6 +96,10 @@ _copy() {
         fi
     fi
 
+    if [[ "$dry" == "1" ]]; then
+        log "[dry] would copy $src → $dst"
+        return
+    fi
     if [[ -d "$src" ]]; then
         cp -R "$src" "$dst"
     else
