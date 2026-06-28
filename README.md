@@ -33,7 +33,7 @@ Then open a new terminal — Zim will bootstrap itself and install plugins on fi
 | 41 | `41-uv.sh` | Installs `uv` (Python package manager) via the upstream installer. |
 | 42 | `42-marksman.sh` | Drops the `marksman` Markdown LSP binary into `~/.local/bin`. |
 | 50 | `50-uv-tools.sh` | `uv tool install` for everything in `install/lists/uv-tools.txt` (`pyright`, `ruff`). |
-| 60 | `60-symlinks.sh` | Symlinks `zsh/*`, `vscode/{settings,keybindings}.json`, and everything under `claude_code/` (except READMEs) into `~/`. Backs up existing real files to `<file>.bak`. |
+| 60 | `60-copy-configs.sh` | Copies `zsh/*`, `vscode/{settings,keybindings}.json`, and everything under `claude_code/` (except READMEs) into `~/`. Skips any target that already exists so local tweaks survive re-runs; set `FORCE=1` to overwrite (existing target is backed up to `<target>.bak`). |
 | 70 | `70-node.sh` | Installs `nvm` if missing, then installs the Node version from `.nvmrc` (`lts/*`) and aliases it as default. |
 | 80 | `80-npm-globals.sh` | `npm install -g` for everything in `install/lists/npm-globals.txt` (TypeScript, `typescript-language-server`, OpenSpec). |
 | 90 | `90-vscode.sh` | Delegates to `vscode/scripts/install-extensions.sh` if `code` is on PATH; otherwise prints a skip note. |
@@ -96,7 +96,7 @@ Editor settings, keybindings, and a managed extensions list with install/save sc
 
 ## Advanced / Manual Setup
 
-If you prefer to manage symlinks yourself instead of using `install.sh`:
+`install.sh` **copies** configs into place as a one-time bootstrap. If you'd rather treat this repo as your live config — edit once, `git diff` shows real drift — symlink the files yourself instead:
 
 ```bash
 # Zsh

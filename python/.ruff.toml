@@ -1,0 +1,68 @@
+line-length = 100
+src = ["src"]
+builtins = ["_"]
+fix = true
+
+[lint]
+future-annotations = true
+select = [
+  "FAST",   # FastAPI
+  "ANN201",
+  "ANN202",
+  "ANN204",
+  "ANN205",
+  "ANN206",
+  "ASYNC",  # flake8-async
+  "BLE",    # flake8-blind-except
+  "B",      # flake8-bugbear
+  "A",      # flake8-builtins
+  "C4",     # flake8-comprehensions
+  "DTZ",    # flake8-datetimez
+  "FA",     # flake8-future-annotationsconcat
+  "ISC",    # flake8-implicit-str-concat
+  "ICN",    # flake8-import-conventions
+  "LOG",    # flake8-logging
+  "G",      # flake8-logging-format
+  "PIE",    # flake8-pie
+  "SIM",    # flake8-simplify (SIM)
+  "TID",    # flake8-tidy-imports
+  "PTH",    # flake8-use-pathlib
+  "I",      # isort
+  "NPY",    # NumPy-specific rules
+  "PERF",   # perflint
+  "E",      # pydocstyle - Error
+  "W",      # pydocstyle - Warning
+  "DOC",    # pydoclint
+  "F",      # Pyflakes
+  "PLC",    # Pylint - Convention
+  "PLR",    # Pylint - Refactor
+  "UP",     # pyupgrade
+  "FURB",   # refurb
+  "RUF",    # Ruff-specific rules
+  "TRY",    # Tryceratops
+]
+ignore = [
+  "PLC0415", #
+  "TRY003",
+  "UP037",
+  "B008",
+  "PERF401",
+  "RUF001", # Arabic letters flagged as ASCII look-alikes; false positives in an Arabic-text codebase
+]
+extend-safe-fixes = ["FAST002"]
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.flake8-annotations]
+allow-star-arg-any = true
+suppress-none-returning = true
+
+[lint.flake8-type-checking]
+quote-annotations = true
+
+[lint.pylint]
+max-args = 10
+
+[format]
+docstring-code-line-length = 120
